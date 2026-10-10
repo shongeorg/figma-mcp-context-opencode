@@ -1,0 +1,123 @@
+
+    <!-- ====================== Order confirmation dialog ====================== -->
+    <dialog id="thanks-dialog" tabindex="-1" aria-labelledby="thanks-dialog-title">
+      <div class="dialog-card dialog-card--wide">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <div class="thanks">
+          <div class="thanks__banner">
+            <img
+              class="thanks__icon"
+              src="assets/images/thank-you.png"
+              width="80"
+              height="92"
+              alt=""
+            />
+            <p class="thanks__lead" id="thanks-dialog-title">
+              Your order has been received
+            </p>
+          </div>
+
+          <dl class="thanks__meta">
+            <div>
+              <dt>Order Number</dt>
+              <dd>19586687</dd>
+            </div>
+            <div>
+              <dt>Date</dt>
+              <dd>15 Sep, 2021</dd>
+            </div>
+            <div>
+              <dt>Total</dt>
+              <dd>2,699.00</dd>
+            </div>
+            <div>
+              <dt>Payment Method</dt>
+              <dd>Cash on delivery</dd>
+            </div>
+          </dl>
+
+          <h2>Order Details</h2>
+
+          <div class="thanks__head">
+            <span>Products</span>
+            <span>Qty</span>
+            <span>Subtotal</span>
+          </div>
+
+          <ul class="thanks__list">
+            <li class="thanks__row">
+              <span class="thanks__product">
+                <img
+                  src="assets/images/plant-barberton-daisy.png"
+                  width="50"
+                  height="50"
+                  alt=""
+                />
+                <span>
+                  <strong>Barberton Daisy</strong>
+                  <span>SKU: 1995751877966</span>
+                </span>
+              </span>
+              <span class="thanks__qty">(x 2)</span>
+              <span class="thanks__sum">$238.00</span>
+            </li>
+            <li class="thanks__row">
+              <span class="thanks__product">
+                <img
+                  src="assets/images/plant-blushing-bromeliad.png"
+                  width="50"
+                  height="50"
+                  alt=""
+                  loading="lazy"
+                />
+                <span>
+                  <strong>Blushing Bromeliad</strong>
+                  <span>SKU: 19957518757065</span>
+                </span>
+              </span>
+              <span class="thanks__qty">(x 6)</span>
+              <span class="thanks__sum">$834.00</span>
+            </li>
+            <li class="thanks__row">
+              <span class="thanks__product">
+                <img
+                  src="assets/images/plant-aluminum-plant.png"
+                  width="50"
+                  height="50"
+                  alt=""
+                  loading="lazy"
+                />
+                <span>
+                  <strong>Aluminum Plant</strong>
+                  <span>SKU: 1995751877786</span>
+                </span>
+              </span>
+              <span class="thanks__qty">(x 9)</span>
+              <span class="thanks__sum">$1,611.00</span>
+            </li>
+          </ul>
+
+          <dl class="thanks__totals">
+            <div>
+              <dt>Shiping</dt>
+              <dd>$16.00</dd>
+            </div>
+            <div>
+              <dt class="strong">Total</dt>
+              <dd class="value">$2,699.00</dd>
+            </div>
+          </dl>
+
+          <p class="thanks__note">
+            Your order is currently being processed. You will receive an order
+            confirmation email shortly with the expected delivery date for your
+            items.
+          </p>
+
+          <a class="btn btn--primary" href="account.html">Track your order</a>
+        </div>
+      </div>
+    </dialog>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Account - GreenShop</title>
+    <meta
+      name="description"
+      content="GreenShop is an online plant shop offering a wide range of cheap and trendy plants, pots and accessories."
+    />
+    <meta name="theme-color" content="#46a358" />
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- Mobile app layer (Figma mobile frames). Desktop ignores all of it. -->
+  <link rel="stylesheet" href="assets/css/mobile-shell.css" />
+  <link rel="stylesheet" href="assets/css/mobile-home.css" />
+  <link rel="stylesheet" href="assets/css/mobile-pdp.css" />
+  <link rel="stylesheet" href="assets/css/mobile-cart.css" />
+  <link rel="stylesheet" href="assets/css/mobile-auth.css" />
+    <script src="assets/js/main.js" defer></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- ============================ Header ============================ -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">
+          <img
+            src="assets/images/logo.svg"
+            width="150"
+            height="35"
+            alt="GreenShop — go to the home page"
+          />
+        </a>
+
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product.html">Shop</a></li>
+            <li><a href="index.html#services">Plant Care</a></li>
+            <li><a href="index.html#blog">Blogs</a></li>
+          </ul>
+        </nav>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+        >
+          <span class="visually-hidden">Menu</span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="header-actions">
+          <button
+            class="icon-btn"
+            type="button"
+            data-search-toggle
+            aria-expanded="false"
+            aria-controls="header-search"
+          >
+            <img src="assets/images/icons/search.svg" width="20" height="20" alt="" />
+            <span class="visually-hidden">Search</span>
+          </button>
+
+          <a class="cart-link" href="cart.html">
+            <img src="assets/images/icons/cart.svg" width="24" height="24" alt="" />
+            <span class="cart-link__badge" aria-hidden="true">6</span>
+            <span class="visually-hidden">Cart, 6 items</span>
+          </a>
+
+          <a
+            class="btn btn--primary btn-login"
+            href="login.html"
+            data-dialog="login-dialog"
+          >
+            <img
+              src="assets/images/icons/icon-logout.svg"
+              width="20"
+              height="20"
+              alt=""
+            />
+            <span>Login</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-search container" id="header-search" data-open="false">
+        <search>
+          <form action="product.html" method="get" role="search">
+            <label class="visually-hidden" for="site-search">Search products</label>
+            <input
+              class="input"
+              type="search"
+              id="site-search"
+              name="q"
+              placeholder="Search for plants, pots and accessories…"
+              autocomplete="off"
+            />
+            <button class="btn btn--primary" type="submit">Search</button>
+          </form>
+        </search>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <div class="account">
+          <!-- Sidebar -->
+          <nav class="account-nav" aria-labelledby="account-nav-title">
+            <h1 class="account-nav__title" id="account-nav-title">My Account</h1>
+            <ul>
+              <li>
+                <a href="account.html" aria-current="page">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4.5 21v-1.2A5.8 5.8 0 0 1 10.3 14h3.4a5.8 5.8 0 0 1 5.8 5.8V21" /></svg>
+                  Account Details
+                </a>
+              </li>
+              <li>
+                <a href="address.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" /><circle cx="12" cy="11" r="2.6" /></svg>
+                  Address
+                </a>
+              </li>
+              <li>
+                <a href="cart.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.1l1.9 10.5h9.8L19 7.6H6.1" /><circle cx="9.2" cy="19" r="1.5" /><circle cx="16.6" cy="19" r="1.5" /></svg>
+                  Orders
+                </a>
+              </li>
+              <li>
+                <a href="product.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.6 15.5 4.6 10.6A3.9 3.9 0 0 1 12 8.3a3.9 3.9 0 0 1 7.4 2.3c0 4.9-7.4 9.6-7.4 9.6Z" /></svg>
+                  Wishlist
+                </a>
+              </li>
+              <li>
+                <a href="account.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 18a8.4 8.4 0 1 1 16.8 0" /><path d="M12 18l4.6-5.4" /><circle cx="12" cy="18" r="1.3" /></svg>
+                  Reports
+                </a>
+              </li>
+              <li>
+                <a href="account.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v9.6" /><path d="M8.4 10.6 12 14.2l3.6-3.6" /><path d="M5 19h14" /></svg>
+                  Downloads
+                </a>
+              </li>
+              <li>
+                <a href="account.html">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4 20.6 19H3.4L12 4.4Z" /><path d="M12 10.6v3.4" /><path d="M12 16.6h.01" /></svg>
+                  Support
+                </a>
+              </li>
+            </ul>
+            <p class="account-nav__logout">
+              <a href="login.html">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.4 5H6.6A2.2 2.2 0 0 0 4.4 7.2v9.6A2.2 2.2 0 0 0 6.6 19h3.8" /><path d="M15.4 8.4 19 12l-3.6 3.6" /><path d="M19 12H9.6" /></svg>
+                Logout
+              </a>
+            </p>
+          </nav>
+
+          <!-- Panel -->
+          <div class="account-panel">
+            <h2>Personal Information</h2>
+
+            <form data-demo="Your account details have been updated." novalidate>
+              <div class="form-grid">
+                <p class="field">
+                  <label class="field__label" for="acc-first"
+                    >First Name <span class="req">*</span></label
+                  >
+                  <input class="input" id="acc-first" name="firstName" type="text" autocomplete="given-name" required />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="acc-last"
+                    >Last Name <span class="req">*</span></label
+                  >
+                  <input class="input" id="acc-last" name="lastName" type="text" autocomplete="family-name" required />
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="acc-email"
+                    >Email address <span class="req">*</span></label
+                  >
+                  <input class="input" id="acc-email" name="email" type="email" autocomplete="email" required />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="acc-phone"
+                    >Phone Number <span class="req">*</span></label
+                  >
+                  <span class="phone-field">
+                    <select class="select" id="acc-phone-prefix" name="phonePrefix" aria-label="Country calling code">
+                      <option value="+966">+966</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                      <option value="+49">+49</option>
+                    </select>
+                    <input
+                      class="input"
+                      id="acc-phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Your phone number"
+                      autocomplete="tel-national"
+                      required
+                    />
+                  </span>
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="acc-user"
+                    >Username <span class="req">*</span></label
+                  >
+                  <input class="input" id="acc-user" name="username" type="text" autocomplete="username" required />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="acc-photo">Photo</label>
+                  <span class="photo-row">
+                    <span class="photo-row__avatar" aria-hidden="true">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="4.4" width="17.2" height="15.2" rx="3" /><circle cx="9" cy="10" r="1.8" /><path d="M4.6 18.2a5 5 0 0 1 8.8-2.6" /></svg>
+                    </span>
+                    <label class="btn btn--primary" for="acc-photo">Change</label>
+                    <input
+                      class="visually-hidden"
+                      id="acc-photo"
+                      name="photo"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                    />
+                    <button class="photo-row__remove" type="button">Remove</button>
+                  </span>
+                </p>
+              </div>
+
+              <h3 class="group-title">Password change</h3>
+
+              <div class="stack">
+                <p class="field">
+                  <label class="field__label" for="acc-pass">Current password</label>
+                  <span class="input-wrap">
+                    <input
+                      class="input"
+                      id="acc-pass"
+                      name="currentPassword"
+                      type="password"
+                      autocomplete="current-password"
+                    />
+                    <button
+                      class="input-wrap__toggle"
+                      type="button"
+                      data-toggle-password="acc-pass"
+                      aria-label="Show password"
+                      aria-pressed="false"
+                    >
+                      <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+                    </button>
+                  </span>
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="acc-pass-new">New password</label>
+                  <span class="input-wrap">
+                    <input
+                      class="input"
+                      id="acc-pass-new"
+                      name="newPassword"
+                      type="password"
+                      autocomplete="new-password"
+                    />
+                    <button
+                      class="input-wrap__toggle"
+                      type="button"
+                      data-toggle-password="acc-pass-new"
+                      aria-label="Show password"
+                      aria-pressed="false"
+                    >
+                      <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+                    </button>
+                  </span>
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="acc-pass-confirm"
+                    >Confirm new password</label
+                  >
+                  <span class="input-wrap">
+                    <input
+                      class="input"
+                      id="acc-pass-confirm"
+                      name="confirmPassword"
+                      type="password"
+                      autocomplete="new-password"
+                    />
+                    <button
+                      class="input-wrap__toggle"
+                      type="button"
+                      data-toggle-password="acc-pass-confirm"
+                      aria-label="Show password"
+                      aria-pressed="false"
+                    >
+                      <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+                    </button>
+                  </span>
+                </p>
+              </div>
+
+              <button class="btn btn--primary" type="submit">Save Change</button>
+              <p class="form-status" data-status role="status"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    
+
+    
+
+    <!-- ====================== Login dialog ====================== -->
+    <dialog id="login-dialog" tabindex="-1" aria-labelledby="login-dialog-title">
+      <div class="dialog-card">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Login</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form class="auth-form" data-demo="You have been logged in.">
+          <p class="auth-lead" id="login-dialog-title">
+            Enter your username and password to login.
+          </p>
+
+          <label class="visually-hidden" for="login-email">Email address</label>
+          <input
+            class="input"
+            id="login-email"
+            type="email"
+            name="email"
+            placeholder="almamun_uxui@outlook.com"
+            autocomplete="email"
+            required
+          />
+
+          <label class="visually-hidden" for="login-password">Password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="login-password"
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              class="input-wrap__toggle"
+              type="button"
+              data-toggle-password="login-password"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <p class="auth-links"><a href="#forgot">Forgot Password?</a></p>
+
+          <button class="btn btn--primary btn--block" type="submit">Login</button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-divider">Or login with</p>
+
+        <div class="auth-social">
+          <a href="#google">
+            <img src="assets/images/icons/google.png" width="22" height="22" alt="" />
+            Login with Google
+          </a>
+          <a href="#facebook">
+            <img src="assets/images/icons/facebook.png" width="17" height="20" alt="" />
+            Login with Facebook
+          </a>
+        </div>
+
+        <p class="auth-foot">
+          Don't have an account? <a href="register.html">Sign Up</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ====================== Register dialog ====================== -->
+    <dialog id="register-dialog" tabindex="-1" aria-labelledby="register-dialog-title">
+      <div class="dialog-card">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Sign Up</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form class="auth-form" data-demo="Your account has been created.">
+          <p class="auth-lead" id="register-dialog-title">
+            Enter your email and password to register.
+          </p>
+
+          <label class="visually-hidden" for="register-name">Username</label>
+          <input
+            class="input"
+            id="register-name"
+            type="text"
+            name="username"
+            placeholder="Username"
+            autocomplete="username"
+            required
+          />
+
+          <label class="visually-hidden" for="register-email">Email address</label>
+          <input
+            class="input"
+            id="register-email"
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            required
+          />
+
+          <label class="visually-hidden" for="register-password">Password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="register-password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+            <button
+              class="input-wrap__toggle"
+              type="button"
+              data-toggle-password="register-password"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <label class="visually-hidden" for="register-confirm">Confirm password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="register-confirm"
+              type="password"
+              name="password_confirm"
+              placeholder="Confirm Password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+            <button
+              class="input-wrap__toggle input-wrap__toggle--mobile"
+              type="button"
+              data-toggle-password="register-confirm"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <button class="btn btn--primary btn--block" type="submit">
+            <span class="lbl--wide">Register</span>
+            <span class="lbl--narrow">Create an account</span>
+          </button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-divider">Or register with</p>
+
+        <div class="auth-social">
+          <a href="#google">
+            <img src="assets/images/icons/google.png" width="22" height="22" alt="" />
+            Continue with Google
+          </a>
+          <a href="#facebook">
+            <img src="assets/images/icons/facebook.png" width="17" height="20" alt="" />
+            Continue with Facebook
+          </a>
+        </div>
+
+        <p class="auth-foot">
+          Already have an account? <a href="login.html">Login</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ====================== Forgot password dialog ====================== -->
+    <dialog id="forgot-dialog" tabindex="-1" aria-labelledby="forgot-dialog-title">
+      <div class="dialog-card dialog-card--pad">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Forgot Password?</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form
+          class="auth-form"
+          data-demo="If that address is registered, a reset link is on its way."
+        >
+          <p class="auth-lead" id="forgot-dialog-title">
+            Enter your email to reset your password.
+          </p>
+
+          <label class="visually-hidden" for="forgot-email">Email address</label>
+          <input
+            class="input"
+            id="forgot-email"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            autocomplete="email"
+            required
+          />
+
+          <button class="btn btn--primary btn--block" type="submit">
+            Send Reset Link
+          </button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-links">
+          <a href="login.html" data-dialog="login-dialog">Back to Login</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- Mobile app chrome. Hidden on desktop by CSS; ships on every page
+         because this lives in the master template. -->
+    <nav class="appbar" aria-label="App">
+      <a class="appbar__link" href="index.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"
+            fill="currentColor"
+          />
+        </svg>
+        <span class="visually-hidden">Home</span>
+      </a>
+      <a class="appbar__link" href="#wishlist">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="visually-hidden">Wishlist</span>
+      </a>
+      <span class="appbar__gap" aria-hidden="true"></span>
+      <a class="appbar__link" href="cart.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M3 4h2.2l2.1 10.4a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L21 7H6.2"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" />
+          <circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="visually-hidden">Cart</span>
+      </a>
+      <a class="appbar__link" href="account.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M4.8 20c.6-3.7 3.6-5.8 7.2-5.8s6.6 2.1 7.2 5.8"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="visually-hidden">My account</span>
+      </a>
+    </nav>
+
+    <a class="appbar__fab" href="index.html" aria-label="Find your plants">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path
+          d="M4 8.5V6a2 2 0 0 1 2-2h2.5M15.5 4H18a2 2 0 0 1 2 2v2.5M20 15.5V18a2 2 0 0 1-2 2h-2.5M8.5 20H6a2 2 0 0 1-2-2v-2.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="2" />
+      </svg>
+    </a>
+
+    <p class="appbar__note" data-appbar-note role="status"></p>
+  </body>
+</html>

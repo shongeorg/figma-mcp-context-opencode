@@ -1,0 +1,156 @@
+/* ==========================================================================
+   GreenShop — mobile auth screens (Figma frames 11 & 12).
+   The login / register / reset modals stop being cards and become full
+   screens: centred logo, single heading, brand-coloured social buttons.
+   Scoped to the three auth dialogs only — the order confirmation dialog
+   keeps its card presentation.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  :is(#login-dialog, #register-dialog, #forgot-dialog) {
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100dvh;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--white);
+  }
+
+  :is(#login-dialog, #register-dialog, #forgot-dialog)::backdrop {
+    background: var(--white);
+  }
+
+  :is(#login-dialog, #register-dialog, #forgot-dialog) .dialog-card,
+  :is(#login-dialog, #register-dialog, #forgot-dialog) .dialog-card--pad {
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100%;
+    max-block-size: none;
+    padding: 30px 20px 40px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* ---------------------------------------------- logo + screen title -- */
+  .auth-logo {
+    display: block;
+    inline-size: 158px;
+    block-size: auto;
+    margin: 34px auto 0;
+  }
+
+  .auth-title {
+    display: block;
+    margin-block: 58px 30px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .auth-tabs {
+    display: none;
+  }
+
+  .auth-lead {
+    display: none;
+  }
+
+  .dialog-close {
+    inset-block-start: 14px;
+    inset-inline-end: 14px;
+    color: var(--quiet);
+  }
+
+  /* --------------------------------------------------------- fields --- */
+  .auth-form .input,
+  .auth-form .input-wrap {
+    inline-size: 100%;
+  }
+
+  .auth-form .input {
+    block-size: 54px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--white);
+    font-size: 15px;
+  }
+
+  .auth-form .input:focus-visible {
+    border-color: var(--green);
+    outline: 1px solid var(--green);
+  }
+
+  .input-wrap__toggle--mobile {
+    display: grid;
+  }
+
+  .auth-form .btn {
+    block-size: 54px;
+    margin-block-start: 24px;
+    border-radius: 14px;
+    font-size: 16px;
+  }
+
+  .auth-links {
+    margin-block-start: 14px;
+    text-align: right;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* ------------------------------------------------------- divider ---- */
+  .auth-divider {
+    margin-block: 26px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  /* ------------------------------------------------- social buttons --- */
+  .auth-social {
+    display: grid;
+    gap: 14px;
+  }
+
+  .auth-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    block-size: 54px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--m-google);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .auth-social a[href="#facebook"] {
+    background: var(--m-facebook);
+  }
+
+  /* the PNG marks already carry a white glyph, so they must stay untouched */
+  .auth-social a img {
+    filter: none;
+    block-size: 24px;
+    inline-size: auto;
+  }
+
+  /* ---------------------------------------------------- screen footer -- */
+  .auth-foot {
+    display: block;
+    margin-block-start: 26px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .auth-foot a {
+    font-weight: 700;
+    color: var(--green);
+  }
+}

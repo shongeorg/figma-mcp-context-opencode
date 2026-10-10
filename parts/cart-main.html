@@ -1,0 +1,286 @@
+      <div class="container">
+        <!-- Mobile-only screen header -->
+        <div class="m-topbar">
+          <a class="m-topbar__btn" href="index.html" aria-label="Back to shop">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="m14.5 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <p class="m-topbar__title" aria-hidden="true">Cart</p>
+          <span class="m-topbar__spacer" aria-hidden="true"></span>
+        </div>
+
+        <h1 class="visually-hidden">Shopping Cart</h1>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a> <span aria-hidden="true">/</span>
+          <a href="product.html">Shop</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">Shopping Cart</span>
+        </nav>
+
+        <div class="cart-layout">
+          <div>
+            <table
+              class="cart-table"
+              aria-label="Products in your shopping cart"
+            >
+              <thead>
+                <tr>
+                  <th scope="col" class="col-product">Products</th>
+                  <th scope="col" class="col-price">Price</th>
+                  <th scope="col" class="col-qty">Quantity</th>
+                  <th scope="col" class="col-total">Total</th>
+                  <th scope="col" class="col-remove">
+                    <span class="visually-hidden">Remove</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-barberton-daisy.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Barberton Daisy</span>
+                        <span class="cart-item__sku">SKU: <span>1995751877966</span></span>
+                        <span class="cart-item__size">Size : <b>M</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$119.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Barberton Daisy">&minus;</button>
+                      <input type="number" value="2" min="1" max="999" aria-label="Quantity of Barberton Daisy" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Barberton Daisy">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$238.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Barberton Daisy from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-blushing-bromeliad.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                          loading="lazy"
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Blushing Bromeliad</span>
+                        <span class="cart-item__sku">SKU: <span>19957518757065</span></span>
+                        <span class="cart-item__size">Size : <b>S</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$139.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Blushing Bromeliad">&minus;</button>
+                      <input type="number" value="6" min="1" max="999" aria-label="Quantity of Blushing Bromeliad" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Blushing Bromeliad">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$834.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Blushing Bromeliad from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-aluminum-plant.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                          loading="lazy"
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Aluminum Plant</span>
+                        <span class="cart-item__sku">SKU: <span>1995751877786</span></span>
+                        <span class="cart-item__size">Size : <b>M</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$179.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Aluminum Plant">&minus;</button>
+                      <input type="number" value="9" min="1" max="999" aria-label="Quantity of Aluminum Plant" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Aluminum Plant">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$1,611.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Aluminum Plant from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="visually-hidden" data-cart-status role="status"></p>
+          </div>
+
+          <aside class="summary" aria-labelledby="cart-totals-title">
+            <h2 class="summary__title" id="cart-totals-title">Cart Totals</h2>
+            <hr />
+
+            <div class="coupon">
+              <div class="coupon__field">
+                <label for="coupon-code">Coupon Apply</label>
+                <input
+                  id="coupon-code"
+                  type="text"
+                  name="coupon"
+                  placeholder="Enter coupon code here..."
+                  autocomplete="off"
+                />
+                <button type="button">Apply</button>
+              </div>
+            </div>
+
+            <dl class="totals">
+              <div>
+                <dt>Subtotal</dt>
+                <dd>$2,683.00</dd>
+              </div>
+              <div>
+                <dt>Coupon Discount</dt>
+                <dd>(-) 00.00</dd>
+              </div>
+              <div>
+                <dt>Shiping</dt>
+                <dd>
+                  $16.00
+                  <a class="note" href="checkout.html">View shipping charge</a>
+                </dd>
+              </div>
+              <div class="total">
+                <dt>Total</dt>
+                <dd class="value">$2,699.00</dd>
+              </div>
+            </dl>
+
+            <a class="btn btn--primary btn--block" href="checkout.html">Proceed To Checkout</a>
+            <a class="continue" href="product.html">Continue Shopping</a>
+          </aside>
+        </div>
+
+        <!-- Interested -->
+        <section class="related" aria-labelledby="interested-title">
+          <h2 class="related__title" id="interested-title">
+            You may be interested in
+          </h2>
+          <hr />
+          <div class="related-grid">
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-beach-spider-lily.png"
+                  width="219"
+                  height="255"
+                  alt="Beach Spider Lily in a two-tone pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Beach Spider Lily</span>
+              <span class="mini-card__price">$129.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-blushing-bromeliad.png"
+                  width="219"
+                  height="255"
+                  alt="Blushing Bromeliad in a ceramic pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Blushing Bromeliad</span>
+              <span class="mini-card__price">$139.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-aluminum-plant.png"
+                  width="219"
+                  height="255"
+                  alt="Aluminum Plant in a round stone pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Aluminum Plant</span>
+              <span class="mini-card__price">$179.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-birds-nest-fern.png"
+                  width="219"
+                  height="255"
+                  alt="Bird's Nest Fern in a hanging planter on a metal stand"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Bird's Nest Fern</span>
+              <span class="mini-card__price">$99.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-chinese-evergreen.png"
+                  width="219"
+                  height="255"
+                  alt="Chinese Evergreen in a hanging geometric planter"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Chinese Evergreen</span>
+              <span class="mini-card__price">$39.00</span>
+            </a>
+          </div>
+          <div class="dots" aria-hidden="true">
+            <span></span><span aria-current="true"></span><span></span>
+          </div>
+        </section>
+      </div>

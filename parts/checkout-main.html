@@ -1,0 +1,314 @@
+      <div class="container">
+        <!-- Mobile-only screen header -->
+        <div class="m-topbar">
+          <a class="m-topbar__btn" href="cart.html" aria-label="Back to cart">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="m14.5 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <p class="m-topbar__title" aria-hidden="true">Checkout</p>
+          <span class="m-topbar__spacer" aria-hidden="true"></span>
+        </div>
+
+        <!-- Mobile-only saved addresses (Figma mobile frame) -->
+        <section class="m-shipping" aria-labelledby="m-shipping-title">
+          <div class="m-shipping__head">
+            <h2 id="m-shipping-title">Shipping to</h2>
+            <a href="address.html">Add Address</a>
+          </div>
+
+          <label class="addr-card">
+            <input type="radio" name="shippingTo" value="home" checked />
+            <span class="addr-card__body">
+              <span class="addr-card__name">Home</span>
+              <span class="addr-card__text">
+                100 Jericho avenue, Westbury,<br />NY 11590, USA
+              </span>
+            </span>
+            <span class="addr-card__more" aria-hidden="true">&#8942;</span>
+          </label>
+
+          <label class="addr-card">
+            <input type="radio" name="shippingTo" value="office" />
+            <span class="addr-card__body">
+              <span class="addr-card__name">Office</span>
+              <span class="addr-card__text">
+                100 Jericho avenue, Westbury,<br />NY 11590, USA
+              </span>
+            </span>
+            <span class="addr-card__more" aria-hidden="true">&#8942;</span>
+          </label>
+        </section>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a> <span aria-hidden="true">/</span>
+          <a href="product.html">Shop</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">Checkout</span>
+        </nav>
+
+        <form
+          class="checkout"
+          data-demo="Thank you. Your order has been placed successfully."
+          data-dialog="thanks-dialog"
+          novalidate
+        >
+          <!-- Billing address -->
+          <div class="billing">
+            <h1 class="block-title">Billing Address</h1>
+
+            <div class="billing__fields">
+              <div class="form-grid">
+                <p class="field">
+                  <label class="field__label" for="first-name"
+                    >First Name <span class="req">*</span></label
+                  >
+                  <input class="input" id="first-name" name="firstName" type="text" autocomplete="given-name" required />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="last-name"
+                    >Last Name <span class="req">*</span></label
+                  >
+                  <input class="input" id="last-name" name="lastName" type="text" autocomplete="family-name" required />
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="country"
+                    >Country / Region <span class="req">*</span></label
+                  >
+                  <select class="select" id="country" name="country" autocomplete="country-name" required>
+                    <option value="">Select a country / region</option>
+                    <option value="us">United States (USA)</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="de">Germany</option>
+                    <option value="au">Australia</option>
+                  </select>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="city"
+                    >Town / City <span class="req">*</span></label
+                  >
+                  <input class="input" id="city" name="city" type="text" autocomplete="address-level2" required />
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="street"
+                    >Street Address <span class="req">*</span></label
+                  >
+                  <input
+                    class="input"
+                    id="street"
+                    name="street"
+                    type="text"
+                    placeholder="House number and street name"
+                    autocomplete="address-line1"
+                    required
+                  />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="street2">
+                    <span class="visually-hidden"
+                      >Apartment, suite, unit, etc. (optional)</span
+                    >
+                  </label>
+                  <input
+                    class="input"
+                    id="street2"
+                    name="street2"
+                    type="text"
+                    placeholder="Appartment, suite, unit, etc. (optional)"
+                    autocomplete="address-line2"
+                  />
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="state"
+                    >State <span class="req">*</span></label
+                  >
+                  <select class="select" id="state" name="state" autocomplete="address-level1" required>
+                    <option value="">Select a state</option>
+                    <option value="ny">New York</option>
+                    <option value="ca">California</option>
+                    <option value="tx">Texas</option>
+                    <option value="fl">Florida</option>
+                  </select>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="zip"
+                    >Zip <span class="req">*</span></label
+                  >
+                  <input class="input" id="zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" required />
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="email"
+                    >Email address <span class="req">*</span></label
+                  >
+                  <input class="input" id="email" name="email" type="email" autocomplete="email" required />
+                </p>
+                <p class="field">
+                  <label class="field__label" for="phone"
+                    >Phone Number <span class="req">*</span></label
+                  >
+                  <span class="phone-field">
+                    <select class="select" id="phone-prefix" name="phonePrefix" aria-label="Country calling code">
+                      <option value="+966" selected>+966</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                      <option value="+49">+49</option>
+                    </select>
+                    <input
+                      class="input"
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Your phone number"
+                      autocomplete="tel-national"
+                      required
+                    />
+                  </span>
+                </p>
+              </div>
+
+              <label class="radio shipping-toggle">
+                <input type="checkbox" name="shipDifferent" />
+                Ship to a different address?
+              </label>
+
+              <p class="field order-notes">
+                <label class="field__label" for="order-notes"
+                  >Order notes (optional)</label
+                >
+                <textarea
+                  class="textarea"
+                  id="order-notes"
+                  name="orderNotes"
+                  rows="5"
+                  placeholder="Notes about your order, e.g. special delivery instructions."
+                ></textarea>
+              </p>
+            </div>
+          </div>
+
+          <!-- Your order -->
+          <aside class="order-panel" aria-labelledby="order-title">
+            <h2 class="block-title" id="order-title">Your Order</h2>
+
+            <div class="order-panel__head">
+              <span>Products</span>
+              <span>Subtotal</span>
+            </div>
+
+            <ul class="order-list">
+              <li>
+                <span class="order-list__media">
+                  <img
+                    src="assets/images/plant-barberton-daisy.png"
+                    width="70"
+                    height="70"
+                    alt=""
+                  />
+                </span>
+                <span class="order-list__body">
+                  <span class="order-list__name">Barberton Daisy</span>
+                  <span class="order-list__sku">SKU: 1995751877966</span>
+                </span>
+                <span class="order-list__qty">(x 2)</span>
+                <span class="order-list__sum">$238.00</span>
+              </li>
+              <li>
+                <span class="order-list__media">
+                  <img
+                    src="assets/images/plant-blushing-bromeliad.png"
+                    width="70"
+                    height="70"
+                    alt=""
+                    loading="lazy"
+                  />
+                </span>
+                <span class="order-list__body">
+                  <span class="order-list__name">Blushing Bromeliad</span>
+                  <span class="order-list__sku">SKU: 19957518757065</span>
+                </span>
+                <span class="order-list__qty">(x 6)</span>
+                <span class="order-list__sum">$834.00</span>
+              </li>
+              <li>
+                <span class="order-list__media">
+                  <img
+                    src="assets/images/plant-aluminum-plant.png"
+                    width="70"
+                    height="70"
+                    alt=""
+                    loading="lazy"
+                  />
+                </span>
+                <span class="order-list__body">
+                  <span class="order-list__name">Aluminum Plant</span>
+                  <span class="order-list__sku">SKU: 1995751877786</span>
+                </span>
+                <span class="order-list__qty">(x 9)</span>
+                <span class="order-list__sum">$1,611.00</span>
+              </li>
+            </ul>
+
+            <a class="coupon-link" href="#coupon-code"
+              ><span>Have a coupon code?</span> Click here</a
+            >
+
+            <div class="order-indent">
+              <dl class="totals">
+                <div>
+                  <dt>Subtotal</dt>
+                  <dd>$2,683.00</dd>
+                </div>
+                <div>
+                  <dt>Coupon Discount</dt>
+                  <dd>(-) 00.00</dd>
+                </div>
+                <div>
+                  <dt>Shiping</dt>
+                  <dd>
+                    $16.00
+                    <span class="note">View shipping charge</span>
+                  </dd>
+                </div>
+                <div class="divider" aria-hidden="true"></div>
+                <div class="total">
+                  <dt>Total</dt>
+                  <dd class="value">$2,699.00</dd>
+                </div>
+              </dl>
+
+              <h3 class="block-title pay-title">Payment Method</h3>
+
+              <fieldset class="payments">
+                <legend class="visually-hidden">Choose a payment method</legend>
+                <label class="payment">
+                  <input type="radio" name="payment" value="card" />
+                  <img
+                    src="assets/images/payment-methods.png"
+                    width="224"
+                    height="26"
+                    alt="Visa, Mastercard, American Express and Discover"
+                    loading="lazy"
+                  />
+                </label>
+                <label class="payment">
+                  <input type="radio" name="payment" value="bank" />
+                  Dorect bank transfer
+                </label>
+                <label class="payment">
+                  <input type="radio" name="payment" value="cod" checked />
+                  Cash on delivery
+                </label>
+              </fieldset>
+
+              <button class="btn btn--primary btn--block" type="submit">
+                Place Order
+              </button>
+              <p class="form-status" data-status role="status"></p>
+            </div>
+          </aside>
+        </form>
+      </div>

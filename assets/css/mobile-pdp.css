@@ -1,0 +1,276 @@
+/* ==========================================================================
+   GreenShop — mobile product screen (Figma frame 8).
+   The gallery becomes a full-bleed hero and the details rise over it as a
+   rounded sheet; the purchase controls move into a pinned action sheet.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  /* ---------------------------------------------------- gallery -------- */
+  .product {
+    display: flex;
+    flex-direction: column;
+    margin-block: 0;
+  }
+
+  .gallery {
+    position: relative;
+    order: 1;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-block: 22px 34px;
+    background: var(--m-surface);
+  }
+
+  .gallery__thumbs,
+  .gallery__zoom {
+    display: none;
+  }
+
+  .gallery__main {
+    inline-size: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .gallery__main img {
+    inline-size: 100%;
+    max-inline-size: 320px;
+    margin-inline: auto;
+    block-size: auto;
+    object-fit: contain;
+  }
+
+  /* compact pill indicator, matching the comp */
+  .gallery::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-end: 14px;
+    inline-size: 8px;
+    block-size: 8px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: var(--green-20);
+    box-shadow: 14px 0 0 var(--green-20), -14px 0 0 var(--green-50);
+  }
+
+  /* ------------------------------------------------- details sheet ------ */
+  .product-info {
+    position: relative;
+    z-index: 1;
+    order: 2;
+    margin-block-start: -22px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 26px var(--gutter) 30px;
+    border-radius: var(--m-sheet-radius) var(--m-sheet-radius) 0 0;
+    background: var(--white);
+  }
+
+  .product-info__title {
+    display: inline;
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+
+  .score-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    float: right;
+    margin: 0;
+    padding: 6px 12px;
+    border: 1px solid var(--green);
+    border-radius: 999px;
+    background: var(--white);
+    font-size: 14px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .score-chip__star {
+    color: #f5a623;
+    font-size: 14px;
+  }
+
+  .score-chip__count {
+    color: var(--muted);
+  }
+
+  .product-info::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  /* the comp shows the price inside the action sheet instead */
+  .product-info__row {
+    display: none;
+  }
+
+  .product-info hr {
+    display: none;
+  }
+
+  .product-info__block {
+    margin-block-start: 22px;
+  }
+
+  .product-info__label {
+    display: none;
+  }
+
+  .product-info__block:first-of-type {
+    margin-block-start: 18px;
+  }
+
+  .product-info__text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* "Size:" heading that the comp puts above the chips */
+  .product-info__block:has(.sizes)::before {
+    content: "Size:";
+    display: block;
+    margin-block-end: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ------------------------------------------------------ size chips --- */
+  .sizes {
+    display: flex;
+    gap: 10px;
+  }
+
+  .sizes button {
+    display: grid;
+    place-items: center;
+    min-inline-size: 44px;
+    block-size: 44px;
+    padding-inline: 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .sizes button[aria-pressed="true"] {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* ---------------------------------------------------------- meta ----- */
+  .meta {
+    margin-block-start: 22px;
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--ink);
+  }
+
+  .meta p span {
+    color: var(--placeholder);
+  }
+
+  .share {
+    margin-block-start: 14px;
+    font-size: 14px;
+  }
+
+  /* -------------------------------------------------- action sheet ----- */
+  .buy-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 10px 12px;
+    margin-block: 26px 0;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 20px var(--gutter) 22px;
+    border-radius: var(--m-sheet-radius) var(--m-sheet-radius) 0 0;
+    background: var(--white);
+    box-shadow: var(--m-sheet-shadow);
+  }
+
+  .buy-row__qty {
+    display: block;
+    font-size: 16px;
+    color: var(--muted);
+  }
+
+  .buy-row__price {
+    display: block;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .buy-row .btn {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    block-size: 56px;
+    border-radius: 999px;
+    font-size: 16px;
+    box-shadow: 0 10px 20px rgba(70, 163, 88, 0.3);
+  }
+
+  .buy-row__cart {
+    display: grid;
+    place-items: center;
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: 50%;
+    background: var(--m-icon);
+  }
+
+  /* ------------------------------------------------------- stepper ----- */
+  .stepper {
+    gap: 6px;
+  }
+
+  .stepper input {
+    inline-size: 34px;
+    border: 0;
+    background: none;
+    text-align: center;
+    font-weight: 700;
+    color: var(--ink);
+    -moz-appearance: textfield;
+  }
+
+  .stepper input::-webkit-outer-spin-button,
+  .stepper input::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+
+  .stepper button {
+    display: grid;
+    place-items: center;
+    inline-size: 34px;
+    block-size: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--m-icon);
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  /* ----------------------------------------------------------- tabs ---- */
+  .tabs {
+    margin-block-start: 26px;
+  }
+}

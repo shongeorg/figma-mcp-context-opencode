@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Cart - GreenShop</title>
+    <meta
+      name="description"
+      content="GreenShop is an online plant shop offering a wide range of cheap and trendy plants, pots and accessories."
+    />
+    <meta name="theme-color" content="#46a358" />
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- Mobile app layer (Figma mobile frames). Desktop ignores all of it. -->
+  <link rel="stylesheet" href="assets/css/mobile-shell.css" />
+  <link rel="stylesheet" href="assets/css/mobile-home.css" />
+  <link rel="stylesheet" href="assets/css/mobile-pdp.css" />
+  <link rel="stylesheet" href="assets/css/mobile-cart.css" />
+  <link rel="stylesheet" href="assets/css/mobile-auth.css" />
+    <script src="assets/js/main.js" defer></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- ============================ Header ============================ -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">
+          <img
+            src="assets/images/logo.svg"
+            width="150"
+            height="35"
+            alt="GreenShop — go to the home page"
+          />
+        </a>
+
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product.html" aria-current="page">Shop</a></li>
+            <li><a href="index.html#services">Plant Care</a></li>
+            <li><a href="index.html#blog">Blogs</a></li>
+          </ul>
+        </nav>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+        >
+          <span class="visually-hidden">Menu</span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="header-actions">
+          <button
+            class="icon-btn"
+            type="button"
+            data-search-toggle
+            aria-expanded="false"
+            aria-controls="header-search"
+          >
+            <img src="assets/images/icons/search.svg" width="20" height="20" alt="" />
+            <span class="visually-hidden">Search</span>
+          </button>
+
+          <a class="cart-link" href="cart.html">
+            <img src="assets/images/icons/cart.svg" width="24" height="24" alt="" />
+            <span class="cart-link__badge" aria-hidden="true">6</span>
+            <span class="visually-hidden">Cart, 6 items</span>
+          </a>
+
+          <a
+            class="btn btn--primary btn-login"
+            href="login.html"
+            data-dialog="login-dialog"
+          >
+            <img
+              src="assets/images/icons/icon-logout.svg"
+              width="20"
+              height="20"
+              alt=""
+            />
+            <span>Login</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="header-search container" id="header-search" data-open="false">
+        <search>
+          <form action="product.html" method="get" role="search">
+            <label class="visually-hidden" for="site-search">Search products</label>
+            <input
+              class="input"
+              type="search"
+              id="site-search"
+              name="q"
+              placeholder="Search for plants, pots and accessories…"
+              autocomplete="off"
+            />
+            <button class="btn btn--primary" type="submit">Search</button>
+          </form>
+        </search>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container">
+        <!-- Mobile-only screen header -->
+        <div class="m-topbar">
+          <a class="m-topbar__btn" href="index.html" aria-label="Back to shop">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="m14.5 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <p class="m-topbar__title" aria-hidden="true">Cart</p>
+          <span class="m-topbar__spacer" aria-hidden="true"></span>
+        </div>
+
+        <h1 class="visually-hidden">Shopping Cart</h1>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a> <span aria-hidden="true">/</span>
+          <a href="product.html">Shop</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">Shopping Cart</span>
+        </nav>
+
+        <div class="cart-layout">
+          <div>
+            <table
+              class="cart-table"
+              aria-label="Products in your shopping cart"
+            >
+              <thead>
+                <tr>
+                  <th scope="col" class="col-product">Products</th>
+                  <th scope="col" class="col-price">Price</th>
+                  <th scope="col" class="col-qty">Quantity</th>
+                  <th scope="col" class="col-total">Total</th>
+                  <th scope="col" class="col-remove">
+                    <span class="visually-hidden">Remove</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-barberton-daisy.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Barberton Daisy</span>
+                        <span class="cart-item__sku">SKU: <span>1995751877966</span></span>
+                        <span class="cart-item__size">Size : <b>M</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$119.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Barberton Daisy">&minus;</button>
+                      <input type="number" value="2" min="1" max="999" aria-label="Quantity of Barberton Daisy" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Barberton Daisy">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$238.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Barberton Daisy from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-blushing-bromeliad.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                          loading="lazy"
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Blushing Bromeliad</span>
+                        <span class="cart-item__sku">SKU: <span>19957518757065</span></span>
+                        <span class="cart-item__size">Size : <b>S</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$139.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Blushing Bromeliad">&minus;</button>
+                      <input type="number" value="6" min="1" max="999" aria-label="Quantity of Blushing Bromeliad" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Blushing Bromeliad">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$834.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Blushing Bromeliad from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-product">
+                    <div class="cart-item">
+                      <span class="cart-item__media">
+                        <img
+                          src="assets/images/plant-aluminum-plant.png"
+                          width="70"
+                          height="70"
+                          alt=""
+                          loading="lazy"
+                        />
+                      </span>
+                      <span class="cart-item__body">
+                        <span class="cart-item__name">Aluminum Plant</span>
+                        <span class="cart-item__sku">SKU: <span>1995751877786</span></span>
+                        <span class="cart-item__size">Size : <b>M</b></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td class="col-price" data-label="Price">
+                    <span class="cell-price">$179.00</span>
+                  </td>
+                  <td class="col-qty" data-label="Quantity">
+                    <div class="stepper stepper--sm" data-stepper>
+                      <button type="button" data-step="-1" aria-label="Decrease quantity of Aluminum Plant">&minus;</button>
+                      <input type="number" value="9" min="1" max="999" aria-label="Quantity of Aluminum Plant" />
+                      <button type="button" data-step="1" aria-label="Increase quantity of Aluminum Plant">+</button>
+                    </div>
+                  </td>
+                  <td class="col-total" data-label="Total">
+                    <span class="cell-total">$1,611.00</span>
+                  </td>
+                  <td class="col-remove">
+                    <button class="cart-item__remove" type="button" data-remove-item>
+                      <img src="assets/images/icons/icon-delete.svg" width="24" height="24" alt="" />
+                      <span class="visually-hidden">Remove Aluminum Plant from the cart</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="visually-hidden" data-cart-status role="status"></p>
+          </div>
+
+          <aside class="summary" aria-labelledby="cart-totals-title">
+            <h2 class="summary__title" id="cart-totals-title">Cart Totals</h2>
+            <hr />
+
+            <div class="coupon">
+              <div class="coupon__field">
+                <label for="coupon-code">Coupon Apply</label>
+                <input
+                  id="coupon-code"
+                  type="text"
+                  name="coupon"
+                  placeholder="Enter coupon code here..."
+                  autocomplete="off"
+                />
+                <button type="button">Apply</button>
+              </div>
+            </div>
+
+            <dl class="totals">
+              <div>
+                <dt>Subtotal</dt>
+                <dd>$2,683.00</dd>
+              </div>
+              <div>
+                <dt>Coupon Discount</dt>
+                <dd>(-) 00.00</dd>
+              </div>
+              <div>
+                <dt>Shiping</dt>
+                <dd>
+                  $16.00
+                  <a class="note" href="checkout.html">View shipping charge</a>
+                </dd>
+              </div>
+              <div class="total">
+                <dt>Total</dt>
+                <dd class="value">$2,699.00</dd>
+              </div>
+            </dl>
+
+            <a class="btn btn--primary btn--block" href="checkout.html">Proceed To Checkout</a>
+            <a class="continue" href="product.html">Continue Shopping</a>
+          </aside>
+        </div>
+
+        <!-- Interested -->
+        <section class="related" aria-labelledby="interested-title">
+          <h2 class="related__title" id="interested-title">
+            You may be interested in
+          </h2>
+          <hr />
+          <div class="related-grid">
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-beach-spider-lily.png"
+                  width="219"
+                  height="255"
+                  alt="Beach Spider Lily in a two-tone pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Beach Spider Lily</span>
+              <span class="mini-card__price">$129.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-blushing-bromeliad.png"
+                  width="219"
+                  height="255"
+                  alt="Blushing Bromeliad in a ceramic pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Blushing Bromeliad</span>
+              <span class="mini-card__price">$139.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-aluminum-plant.png"
+                  width="219"
+                  height="255"
+                  alt="Aluminum Plant in a round stone pot"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Aluminum Plant</span>
+              <span class="mini-card__price">$179.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-birds-nest-fern.png"
+                  width="219"
+                  height="255"
+                  alt="Bird's Nest Fern in a hanging planter on a metal stand"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Bird's Nest Fern</span>
+              <span class="mini-card__price">$99.00</span>
+            </a>
+            <a class="mini-card" href="product.html">
+              <span class="mini-card__media">
+                <img
+                  src="assets/images/plant-chinese-evergreen.png"
+                  width="219"
+                  height="255"
+                  alt="Chinese Evergreen in a hanging geometric planter"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mini-card__title">Chinese Evergreen</span>
+              <span class="mini-card__price">$39.00</span>
+            </a>
+          </div>
+          <div class="dots" aria-hidden="true">
+            <span></span><span aria-current="true"></span><span></span>
+          </div>
+        </section>
+      </div>
+    
+
+    <!-- ========================== Footer ========================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top" id="services">
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="assets/images/icons/svc-garden.png"
+                width="92"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Garden Care</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="assets/images/icons/svc-renovation.png"
+                width="92"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Plant Renovation</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="assets/images/icons/svc-watering.png"
+                width="96"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Watering</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <div class="newsletter">
+            <h2 class="newsletter__title">Would you like to join newsletters?</h2>
+            <form
+              class="newsletter__form"
+              data-demo="Thanks for subscribing to our newsletter!"
+            >
+              <label class="visually-hidden" for="newsletter-email">Email address</label>
+              <input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                placeholder="enter your email address..."
+                autocomplete="email"
+                required
+              />
+              <button type="submit">Join</button>
+              <p class="form-status" data-status role="status"></p>
+            </form>
+            <p class="newsletter__text">
+              We usually post offers, tips and tricks and other interesting info on our
+              social media accounts.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <a class="logo" href="index.html">
+            <img
+              src="assets/images/logo.svg"
+              width="150"
+              height="35"
+              alt="GreenShop — go to the home page"
+              loading="lazy"
+            />
+          </a>
+          <p class="contact-item">
+            <img src="assets/images/icons/icon-location.svg" width="20" height="20" alt="" loading="lazy" />
+            <span>70 West Buckingham Ave.<br />Farmingdale, NY 11735</span>
+          </p>
+          <p class="contact-item">
+            <img src="assets/images/icons/icon-message.svg" width="20" height="20" alt="" loading="lazy" />
+            <a href="mailto:contact@greenshop.com">contact@greenshop.com</a>
+          </p>
+          <p class="contact-item">
+            <img src="assets/images/icons/icon-calling.svg" width="20" height="20" alt="" loading="lazy" />
+            <a href="tel:+8801911717490">+88 01911 717 490</a>
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <nav class="footer-col" aria-labelledby="footer-account">
+            <h2 class="footer-col__title" id="footer-account">My Account</h2>
+            <ul>
+              <li><a href="account.html">My Account</a></li>
+              <li><a href="cart.html">Our stores</a></li>
+              <li><a href="address.html">Contact us</a></li>
+              <li><a href="index.html#blog">Career</a></li>
+              <li><a href="product.html">Specials</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="footer-help">
+            <h2 class="footer-col__title" id="footer-help">Help &amp; Guide</h2>
+            <ul>
+              <li><a href="index.html#services">Help Center</a></li>
+              <li><a href="product.html">How to Buy</a></li>
+              <li><a href="checkout.html">Shipping &amp; Delivery</a></li>
+              <li><a href="index.html#services">Product Policy</a></li>
+              <li><a href="cart.html">How to Return</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="footer-categories">
+            <h2 class="footer-col__title" id="footer-categories">Categories</h2>
+            <ul>
+              <li><a href="product.html">House Plants</a></li>
+              <li><a href="product.html">Potter Plants</a></li>
+              <li><a href="product.html">Seeds</a></li>
+              <li><a href="product.html">Small Plants</a></li>
+              <li><a href="product.html">Accessories</a></li>
+            </ul>
+          </nav>
+
+          <div class="footer-col">
+            <h2 class="footer-col__title">Social Media</h2>
+            <ul class="social">
+              <li>
+                <a href="https://www.instagram.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="assets/images/icons/social-instagram.svg" width="20" height="20" alt="Instagram" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="assets/images/icons/social-facebook.svg" width="20" height="20" alt="Facebook" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="assets/images/icons/social-twitter.svg" width="20" height="20" alt="Twitter" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.youtube.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="assets/images/icons/social-youtube.svg" width="20" height="20" alt="YouTube" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="assets/images/icons/social-linkedin.svg" width="20" height="20" alt="LinkedIn" loading="lazy" />
+                </a>
+              </li>
+            </ul>
+
+            <div class="accept">
+              <h3 class="footer-col__title">We accept</h3>
+              <img
+                src="assets/images/payment-methods.png"
+                width="224"
+                height="30"
+                alt="Accepted payment methods"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+
+        <p class="copyright">© 2021 GreenShop. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <!-- ====================== Login dialog ====================== -->
+    <dialog id="login-dialog" tabindex="-1" aria-labelledby="login-dialog-title">
+      <div class="dialog-card">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Login</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form class="auth-form" data-demo="You have been logged in.">
+          <p class="auth-lead" id="login-dialog-title">
+            Enter your username and password to login.
+          </p>
+
+          <label class="visually-hidden" for="login-email">Email address</label>
+          <input
+            class="input"
+            id="login-email"
+            type="email"
+            name="email"
+            placeholder="almamun_uxui@outlook.com"
+            autocomplete="email"
+            required
+          />
+
+          <label class="visually-hidden" for="login-password">Password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="login-password"
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              class="input-wrap__toggle"
+              type="button"
+              data-toggle-password="login-password"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <p class="auth-links"><a href="#forgot">Forgot Password?</a></p>
+
+          <button class="btn btn--primary btn--block" type="submit">Login</button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-divider">Or login with</p>
+
+        <div class="auth-social">
+          <a href="#google">
+            <img src="assets/images/icons/google.png" width="22" height="22" alt="" />
+            Login with Google
+          </a>
+          <a href="#facebook">
+            <img src="assets/images/icons/facebook.png" width="17" height="20" alt="" />
+            Login with Facebook
+          </a>
+        </div>
+
+        <p class="auth-foot">
+          Don't have an account? <a href="register.html">Sign Up</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ====================== Register dialog ====================== -->
+    <dialog id="register-dialog" tabindex="-1" aria-labelledby="register-dialog-title">
+      <div class="dialog-card">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Sign Up</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form class="auth-form" data-demo="Your account has been created.">
+          <p class="auth-lead" id="register-dialog-title">
+            Enter your email and password to register.
+          </p>
+
+          <label class="visually-hidden" for="register-name">Username</label>
+          <input
+            class="input"
+            id="register-name"
+            type="text"
+            name="username"
+            placeholder="Username"
+            autocomplete="username"
+            required
+          />
+
+          <label class="visually-hidden" for="register-email">Email address</label>
+          <input
+            class="input"
+            id="register-email"
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            required
+          />
+
+          <label class="visually-hidden" for="register-password">Password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="register-password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+            <button
+              class="input-wrap__toggle"
+              type="button"
+              data-toggle-password="register-password"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <label class="visually-hidden" for="register-confirm">Confirm password</label>
+          <span class="input-wrap">
+            <input
+              class="input"
+              id="register-confirm"
+              type="password"
+              name="password_confirm"
+              placeholder="Confirm Password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+            <button
+              class="input-wrap__toggle input-wrap__toggle--mobile"
+              type="button"
+              data-toggle-password="register-confirm"
+              aria-pressed="false"
+              aria-label="Show password"
+            >
+              <img src="assets/images/icons/icon-eye-off.svg" width="20" height="20" alt="" />
+            </button>
+          </span>
+
+          <button class="btn btn--primary btn--block" type="submit">
+            <span class="lbl--wide">Register</span>
+            <span class="lbl--narrow">Create an account</span>
+          </button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-divider">Or register with</p>
+
+        <div class="auth-social">
+          <a href="#google">
+            <img src="assets/images/icons/google.png" width="22" height="22" alt="" />
+            Continue with Google
+          </a>
+          <a href="#facebook">
+            <img src="assets/images/icons/facebook.png" width="17" height="20" alt="" />
+            Continue with Facebook
+          </a>
+        </div>
+
+        <p class="auth-foot">
+          Already have an account? <a href="login.html">Login</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ====================== Forgot password dialog ====================== -->
+    <dialog id="forgot-dialog" tabindex="-1" aria-labelledby="forgot-dialog-title">
+      <div class="dialog-card dialog-card--pad">
+        <button class="dialog-close" type="button" data-dialog-close aria-label="Close dialog">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <img class="auth-logo" src="assets/images/logo-stacked.svg" width="158" height="91" alt="GreenShop" />
+        <p class="auth-title" aria-hidden="true">Forgot Password?</p>
+
+        <nav class="auth-tabs" aria-label="Account">
+          <a href="login.html">Login</a>
+          <span class="sep" aria-hidden="true">|</span>
+          <a href="register.html">Register</a>
+        </nav>
+
+        <form
+          class="auth-form"
+          data-demo="If that address is registered, a reset link is on its way."
+        >
+          <p class="auth-lead" id="forgot-dialog-title">
+            Enter your email to reset your password.
+          </p>
+
+          <label class="visually-hidden" for="forgot-email">Email address</label>
+          <input
+            class="input"
+            id="forgot-email"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            autocomplete="email"
+            required
+          />
+
+          <button class="btn btn--primary btn--block" type="submit">
+            Send Reset Link
+          </button>
+          <p class="form-status" data-status role="status"></p>
+        </form>
+
+        <p class="auth-links">
+          <a href="login.html" data-dialog="login-dialog">Back to Login</a>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- Mobile app chrome. Hidden on desktop by CSS; ships on every page
+         because this lives in the master template. -->
+    <nav class="appbar" aria-label="App">
+      <a class="appbar__link" href="index.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"
+            fill="currentColor"
+          />
+        </svg>
+        <span class="visually-hidden">Home</span>
+      </a>
+      <a class="appbar__link" href="#wishlist">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="visually-hidden">Wishlist</span>
+      </a>
+      <span class="appbar__gap" aria-hidden="true"></span>
+      <a class="appbar__link" href="cart.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M3 4h2.2l2.1 10.4a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L21 7H6.2"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" />
+          <circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="visually-hidden">Cart</span>
+      </a>
+      <a class="appbar__link" href="account.html">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M4.8 20c.6-3.7 3.6-5.8 7.2-5.8s6.6 2.1 7.2 5.8"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="visually-hidden">My account</span>
+      </a>
+    </nav>
+
+    <a class="appbar__fab" href="index.html" aria-label="Find your plants">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path
+          d="M4 8.5V6a2 2 0 0 1 2-2h2.5M15.5 4H18a2 2 0 0 1 2 2v2.5M20 15.5V18a2 2 0 0 1-2 2h-2.5M8.5 20H6a2 2 0 0 1-2-2v-2.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="2" />
+      </svg>
+    </a>
+
+    <p class="appbar__note" data-appbar-note role="status"></p>
+  </body>
+</html>

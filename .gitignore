@@ -1,0 +1,17 @@
+.vercel
+node_modules
+test-results
+tests/screenshots.spec.ts-snapshots
+playwright-report
+preview/Main-preview.png
+
+# Secrets — never commit these.
+opencode.jsonc
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log

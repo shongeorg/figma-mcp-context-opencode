@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://figma-mcp-context-opencode.vercel.app/sitemap.xml
