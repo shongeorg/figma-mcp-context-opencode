@@ -1,16 +1,26 @@
 {
-  "name": "maket-figma",
+  "name": "greenshop-figma-maket",
   "version": "1.0.0",
-  "description": "",
+  "description": "GreenShop — багатосторінковий статичний макет Figma → HTML/CSS без фреймворків, з адаптивом і окремим мобільним шаром застосунку (≤640px).",
   "scripts": {
     "dev": "npx live-server --port=3333 --no-browser",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File parts/build.ps1",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
     "deploy": "vercel --prod"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "figma",
+    "html",
+    "css",
+    "static-site",
+    "responsive",
+    "mobile-first",
+    "greenshop",
+    "playwright"
+  ],
+  "author": "shongeorg",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
