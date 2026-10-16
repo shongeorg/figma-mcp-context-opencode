@@ -1,0 +1,20 @@
+# GreenShop backend — pinned for the VPS the user will buy later.
+# Python 3.14 requires Django >= 6.0.
+#
+#   python -m venv .venv
+#   .\.venv\Scripts\pip install -r requirements.txt
+
+Django==6.1.2
+
+# Neon speaks Postgres over TLS. The [binary] extra ships libpq, so the
+# box does not need a system-wide Postgres client installed.
+psycopg[binary]==3.3.6
+
+# Product image uploads in the admin.
+Pillow==12.3.0
+
+# Reads backend/.env (NEON_DB, DJANGO_ENV, DJANGO_SECRET_KEY, ...).
+python-dotenv==1.2.4
+
+# Serves static files off the Django app behind nginx/gunicorn later on.
+whitenoise==6.12.0
