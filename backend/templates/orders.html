@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders — GreenShop{% endblock %}
+
+{% block main %}
+      <div class="container account">
+        <div class="account-inner">
+          <nav class="account-nav" aria-label="Account">
+            <a href="{% url 'core:account' %}">Account</a>
+            <a href="{% url 'orders:list' %}" aria-current="page">My Orders</a>
+            <a href="{% url 'core:address-list' %}">Address Book</a>
+            <a href="{% url 'catalog:wishlist' %}">Wishlist ({{ wishlist_count }})</a>
+            <a href="{% url 'core:logout' %}">Logout</a>
+          </nav>
+
+          <div class="account-main">
+            <h1>My Orders ({{ orders|length }})</h1>
+
+            {% if orders %}
+              <ul class="order-list">
+                {% for order in orders %}
+                  <li>
+                    <span class="order-list__body">
+                      <span class="order-list__name">
+                        <a href="{{ order.get_absolute_url }}">Order {{ order.number }}</a>
+                      </span>
+                      <span class="order-list__sku">
+                        {{ order.created_at|date:"M j, Y" }} — {{ order.get_status_display }}
+                        {% if order.is_paid %}— Paid{% endif %}
+                        — {{ order.items|length }} {% if order.items|length == 1 %}item{% else %}items{% endif %}
+                      </span>
+                    </span>
+                    <span class="order-list__sum">
+                      {{ CURRENCY }}{{ order.total|floatformat:2 }}
+                    </span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="empty-state">
+                You have not ordered anything yet.
+                <a href="{% url 'catalog:shop' %}">Browse the shop</a>.
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+{% endblock %}

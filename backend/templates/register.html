@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register — GreenShop{% endblock %}
+
+{% block main %}
+      <div class="auth-page" id="register-dialog">
+        <div class="dialog-card">
+          <img
+            class="auth-logo"
+            src="{% static 'images/logo-stacked.svg' %}"
+            width="158"
+            height="91"
+            alt="GreenShop"
+          />
+          <h1 class="auth-title">Register</h1>
+
+          <nav class="auth-tabs" aria-label="Account">
+            <a href="{% url 'core:login' %}">Login</a>
+            <span class="sep" aria-hidden="true">|</span>
+            <a href="{% url 'core:register' %}" aria-current="page">Register</a>
+          </nav>
+
+          <form class="auth-form" method="post" action="">
+            {% csrf_token %}
+
+            <p class="auth-lead" id="register-dialog-title">
+              Create an account to keep track of your orders.
+            </p>
+
+            {% if form.non_field_errors %}
+              <div class="auth-errors">
+                <ul>
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            {% if request.GET.next %}
+              <input type="hidden" name="next" value="{{ request.GET.next }}" />
+            {% endif %}
+
+            {% for field in form %}
+              {% if not field.is_hidden %}
+                <label class="visually-hidden" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                  <span class="field-error">{{ error }}</span>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+
+            <button class="btn btn--primary btn--block" type="submit">Register</button>
+          </form>
+
+          <p class="auth-foot">
+            Already have an account? <a href="{% url 'core:login' %}">Login</a>
+          </p>
+        </div>
+      </div>
+{% endblock %}

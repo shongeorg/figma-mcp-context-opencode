@@ -1,0 +1,53 @@
+{% load static %}
+<nav class="appbar" aria-label="App">
+      <a class="appbar__link" href="{% url 'core:home' %}">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"
+            fill="currentColor"
+          />
+        </svg>
+        <span class="visually-hidden">Home</span>
+      </a>
+      <a class="appbar__link" href="#wishlist">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="visually-hidden">Wishlist</span>
+      </a>
+      <span class="appbar__gap" aria-hidden="true"></span>
+      <a class="appbar__link" href="{% url 'orders:cart' %}">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path
+            d="M3 4h2.2l2.1 10.4a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L21 7H6.2"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="9.5" cy="19.5" r="1.4" fill="currentColor" />
+          <circle cx="17.5" cy="19.5" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="visually-hidden">Cart</span>
+      </a>
+      <a class="appbar__link" href="{% url 'core:account' %}">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M4.8 20c.6-3.7 3.6-5.8 7.2-5.8s6.6 2.1 7.2 5.8"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="visually-hidden">My account</span>
+      </a>
+    </nav>

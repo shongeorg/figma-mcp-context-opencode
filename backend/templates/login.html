@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login — GreenShop{% endblock %}
+
+{% block main %}
+      <div class="auth-page" id="login-dialog">
+        <div class="dialog-card">
+          <img
+            class="auth-logo"
+            src="{% static 'images/logo-stacked.svg' %}"
+            width="158"
+            height="91"
+            alt="GreenShop"
+          />
+          <h1 class="auth-title">Login</h1>
+
+          <nav class="auth-tabs" aria-label="Account">
+            <a href="{% url 'core:login' %}" aria-current="page">Login</a>
+            <span class="sep" aria-hidden="true">|</span>
+            <a href="{% url 'core:register' %}">Register</a>
+          </nav>
+
+          <form class="auth-form" method="post" action="">
+            {% csrf_token %}
+
+            <p class="auth-lead" id="login-dialog-title">
+              Enter your username and password to login.
+            </p>
+
+            {% if form.non_field_errors %}
+              <div class="auth-errors">
+                <ul>
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            {% if request.GET.next %}
+              <input type="hidden" name="next" value="{{ request.GET.next }}" />
+            {% endif %}
+
+            <label class="visually-hidden" for="id_username">Username</label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+              <span class="field-error">{{ error }}</span>
+            {% endfor %}
+
+            <label class="visually-hidden" for="id_password">Password</label>
+            <span class="input-wrap">
+              {{ form.password }}
+              <button
+                class="input-wrap__toggle"
+                type="button"
+                data-toggle-password="id_password"
+                aria-pressed="false"
+                aria-label="Show password"
+              >
+                <img
+                  src="{% static 'images/icons/icon-eye-off.svg' %}"
+                  width="20"
+                  height="20"
+                  alt=""
+                />
+              </button>
+            </span>
+            {% for error in form.password.errors %}
+              <span class="field-error">{{ error }}</span>
+            {% endfor %}
+
+            <p class="auth-links">
+              <a href="{% url 'core:register' %}">Forgot Password?</a>
+            </p>
+
+            <button class="btn btn--primary btn--block" type="submit">Login</button>
+          </form>
+
+          <p class="auth-foot">
+            Don't have an account? <a href="{% url 'core:register' %}">Sign Up</a>
+          </p>
+
+          <p class="auth-demo">
+            Demo accounts: <strong>admin / admin</strong> and
+            <strong>user / user</strong>.
+          </p>
+        </div>
+      </div>
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if category %}{{ category.name }} — {% endif %}Shop — {{ SITE_NAME }}{% endblock %}
+
+{% block main %}
+<!-- Mobile-only top row: search + filter trigger (Figma mobile frame) -->
+      <div class="m-toprow">
+        <form class="m-search" role="search" action="{% url 'catalog:shop' %}" method="get">
+          <label class="visually-hidden" for="m-search-input">Find your plants</label>
+          <svg
+            class="m-search__icon"
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="6.4" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="m16 16 4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <input
+            id="m-search-input"
+            type="search"
+            name="q"
+            placeholder="Find your plants"
+            autocomplete="off"
+            value="{{ search_query }}"
+          />
+        </form>
+        <button
+          class="m-filter"
+          type="button"
+          data-filter-toggle
+          aria-expanded="false"
+          aria-controls="filters"
+          aria-label="Product filters"
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path d="M4 8h9M17 8h3M4 16h3M11 16h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <circle cx="15" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="2" />
+            <circle cx="9" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span>
+          {% if category %}
+          <a href="{% url 'catalog:shop' %}">Shop</a> <span aria-hidden="true">/</span>
+          {% for crumb in breadcrumbs %}
+          {% if not forloop.last %}
+          <a href="{{ crumb.get_absolute_url }}">{{ crumb.name }}</a> <span aria-hidden="true">/</span>
+          {% endif %}
+          {% endfor %}
+          <span aria-current="page">{{ category.name }}</span>
+          {% else %}
+          <span aria-current="page">Shop</span>
+          {% endif %}
+        </nav>
+      </div>
+
+      <!-- ========================== Shop ========================== -->
+      <div class="container shop">
+        <!-- Sidebar -->
+        <div>
+          <aside class="filters" id="filters" aria-label="Product filters">
+            <div class="filter-block">
+              <h2 class="filter-title">Categories</h2>
+              <ul class="filter-list">
+                {% for row in category_rows %}
+                <li>
+                  <a href="{{ row.category.get_absolute_url }}"{% if row.category in breadcrumbs %} aria-current="true"{% endif %}>{{ row.category.name }}</a>
+                  <span class="count">({{ row.count }})</span>
+                </li>
+                {% if row.children %}
+                <li>
+                  <ul class="filter-list">
+                    {% for child in row.children %}
+                    <li>
+                      <a href="{{ child.category.get_absolute_url }}"{% if category and category.pk == child.category.pk %} aria-current="true"{% endif %}>{{ child.category.name }}</a>
+                      <span class="count">({{ child.count }})</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endif %}
+                {% empty %}
+                <li><a href="{% url 'catalog:shop' %}">All Plants</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="filter-block">
+              <h2 class="filter-title">Price Range</h2>
+              <div class="range" data-range>
+                <div class="range__track">
+                  <span class="range__fill" aria-hidden="true"></span>
+                  <input
+                    type="range"
+                    min="39"
+                    max="1230"
+                    value="{{ price_min|default:39 }}"
+                    aria-label="Minimum price"
+                  />
+                  <input
+                    type="range"
+                    min="39"
+                    max="1230"
+                    value="{{ price_max|default:1230 }}"
+                    aria-label="Maximum price"
+                  />
+                </div>
+                <p class="range__label">
+                  Price: <strong data-range-label>{{ CURRENCY }}{{ price_min|default:39|floatformat:0 }} - {{ CURRENCY }}{{ price_max|default:1230|floatformat:0 }}</strong>
+                </p>
+                <button class="btn btn--primary" type="button">Filter</button>
+              </div>
+            </div>
+
+            <div class="filter-block filter-block--size">
+              <h2 class="filter-title">Size</h2>
+              <ul class="filter-list">
+                {% for size in all_sizes %}
+                <li>
+                  <a href="?size={{ size.slug }}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.price %}&price={{ request.GET.price }}{% endif %}"{% if size in selected_sizes %} aria-current="true"{% endif %}>{{ size.name }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="filter-block">
+              <h2 class="filter-title">Tags</h2>
+              <ul class="filter-list">
+                {% for tag in all_tags %}
+                <li>
+                  <a href="?tag={{ tag.slug }}{% if request.GET.size %}&size={{ request.GET.size }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.price %}&price={{ request.GET.price }}{% endif %}"{% if tag in selected_tags %} aria-current="true"{% endif %}>{{ tag.name }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </aside>
+
+          <section class="sale-banner" aria-labelledby="sale-title">
+            <h2 class="sale-banner__title" id="sale-title">Super Sale</h2>
+            <p class="sale-banner__sub">UP TO 75% OFF</p>
+            <div class="sale-banner__media" aria-hidden="true">
+              <img
+                src="{% static 'images/super-sale.png' %}"
+                width="370"
+                height="370"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </section>
+        </div>
+
+        <!-- Mobile-only shop tabs -->
+        <nav class="m-tabs" aria-label="Shop sections">
+          <a class="m-tabs__item" href="{% url 'catalog:shop' %}" data-m-tab="all">All Plants</a>
+          <a class="m-tabs__item" href="{% url 'catalog:shop' %}?sort=newest" data-m-tab="new">New Arrivals</a>
+          <a class="m-tabs__item" href="{% url 'catalog:shop' %}" data-m-tab="sale">Sale</a>
+        </nav>
+
+        <!-- Product grid -->
+        <section aria-labelledby="shop-title">
+          <h1 class="shop-title" id="shop-title">
+            {% if category %}
+              {{ category.name }}
+            {% elif search_query %}
+              Results for “{{ search_query }}”
+            {% else %}
+              Shop
+            {% endif %}
+          </h1>
+          {% if page_obj %}<p class="shop-count">
+            {{ paginator.count }} {% if paginator.count == 1 %}product{% else %}products{% endif %}
+          </p>{% endif %}
+
+          <div class="shop-toolbar">
+            <div class="shop-tabs" role="group" aria-label="Filter product list">
+              <button type="button" aria-pressed="true">All Plants</button>
+              <button type="button" aria-pressed="false">New Arrivals</button>
+              <button type="button" aria-pressed="false">Sale</button>
+            </div>
+
+            <form method="get" action="{% url 'catalog:shop' %}">
+              <div class="sort">
+                <label for="sort-by">Short by:</label>
+                <select class="select" id="sort-by" name="sort" onchange="this.form.submit()">
+                  {% for value, label in sort_options %}
+                  <option value="{{ value }}"{% if sort == value %} selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% if request.GET.q %}<input type="hidden" name="q" value="{{ search_query }}" />{% endif %}
+              {% if request.GET.size %}<input type="hidden" name="size" value="{{ request.GET.size }}" />{% endif %}
+              {% if request.GET.tag %}<input type="hidden" name="tag" value="{{ request.GET.tag }}" />{% endif %}
+              {% if request.GET.price %}<input type="hidden" name="price" value="{{ request.GET.price }}" />{% endif %}
+            </form>
+          </div>
+
+          {% if page_obj.object_list %}
+          <ul class="product-grid">
+            {% for product in page_obj %}
+            <li class="product-card">
+              <div class="product-card__media">
+                {% if product.is_on_sale %}
+                <span class="badge">{{ product.discount_percent }}% OFF</span>
+                {% endif %}
+                <a href="{{ product.get_absolute_url }}">
+                  {% if product.image_url %}
+                  <img
+                    src="{{ product.image_url }}"
+                    width="250"
+                    height="250"
+                    alt="{{ product.name }}"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {% endif %}
+                </a>
+                <div class="quick-actions">
+                  <form method="post" action="{% url 'orders:add' product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                      <img src="{% static 'images/icons/icon-cart.svg' %}" width="20" height="20" alt="" />
+                      <span class="visually-hidden">Add {{ product.name }} to cart</span>
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'catalog:wishlist-toggle' product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">
+                      <img src="{% static 'images/icons/icon-heart.svg' %}" width="20" height="20" alt="" />
+                      <span class="visually-hidden">Add {{ product.name }} to wishlist</span>
+                    </button>
+                  </form>
+                  <a href="{{ product.get_absolute_url }}">
+                    <img src="{% static 'images/icons/icon-eye.svg' %}" width="20" height="20" alt="" />
+                    <span class="visually-hidden">View {{ product.name }}</span>
+                  </a>
+                </div>
+              </div>
+              <h3 class="product-card__title">
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+              </h3>
+              <p class="product-card__price">
+                <span>{{ CURRENCY }}{{ product.price|floatformat:2 }}</span>
+                {% if product.old_price %}
+                <span class="price--old">{{ CURRENCY }}{{ product.old_price|floatformat:2 }}</span>
+                {% endif %}
+              </p>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="account-panel__lead">No plants matched your filters. Try another search or clear a filter.</p>
+          {% endif %}
+
+          {% if paginator.num_pages > 1 %}
+          <nav class="pagination" aria-label="Pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.size %}&size={{ request.GET.size }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.price %}&price={{ request.GET.price }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" aria-label="Previous page">&larr;</a>
+            {% endif %}
+            {% for n in paginator.page_range %}
+            {% if n == page_obj.number %}
+            <span aria-current="page">{{ n }}</span>
+            {% elif n == 1 or n == paginator.num_pages or page_obj.number|add:"-2" <= n and page_obj.number|add:"2" >= n %}
+            <a href="?page={{ n }}{% if request.GET.size %}&size={{ request.GET.size }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.price %}&price={{ request.GET.price }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" aria-label="Page {{ n }}">{{ n }}</a>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.size %}&size={{ request.GET.size }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}{% if request.GET.price %}&price={{ request.GET.price }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" aria-label="Next page">
+              <img
+                src="{% static 'images/icons/arrow-right-outline.svg' %}"
+                width="18"
+                height="18"
+                alt=""
+                loading="lazy"
+              />
+            </a>
+            {% endif %}
+          </nav>
+          {% endif %}
+        </section>
+      </div>
+{% endblock %}

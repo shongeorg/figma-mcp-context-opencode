@@ -1,0 +1,189 @@
+{% load static %}
+<!-- ========================== Footer ========================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top" id="services">
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="{% static 'images/icons/svc-garden.png' %}"
+                width="92"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Garden Care</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="{% static 'images/icons/svc-renovation.png' %}"
+                width="92"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Plant Renovation</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <article class="service">
+            <div class="service__icon">
+              <img
+                src="{% static 'images/icons/svc-watering.png' %}"
+                width="96"
+                height="104"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h2 class="service__title">Watering</h2>
+            <p class="service__text">
+              We are an online plant shop offering a wide range of cheap and trendy
+              plants.
+            </p>
+          </article>
+
+          <div class="newsletter">
+            <h2 class="newsletter__title">Would you like to join newsletters?</h2>
+            <form
+              class="newsletter__form"
+              data-demo="Thanks for subscribing to our newsletter!"
+            >
+              <label class="visually-hidden" for="newsletter-email">Email address</label>
+              <input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                placeholder="enter your email address..."
+                autocomplete="email"
+                required
+              />
+              <button type="submit">Join</button>
+              <p class="form-status" data-status role="status"></p>
+            </form>
+            <p class="newsletter__text">
+              We usually post offers, tips and tricks and other interesting info on our
+              social media accounts.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-contact">
+          <a class="logo" href="{% url 'core:home' %}">
+            <img
+              src="{% static 'images/logo.svg' %}"
+              width="150"
+              height="35"
+              alt="GreenShop — go to the home page"
+              loading="lazy"
+            />
+          </a>
+          <p class="contact-item">
+            <img src="{% static 'images/icons/icon-location.svg' %}" width="20" height="20" alt="" loading="lazy" />
+            <span>70 West Buckingham Ave.<br />Farmingdale, NY 11735</span>
+          </p>
+          <p class="contact-item">
+            <img src="{% static 'images/icons/icon-message.svg' %}" width="20" height="20" alt="" loading="lazy" />
+            <a href="mailto:contact@greenshop.com">contact@greenshop.com</a>
+          </p>
+          <p class="contact-item">
+            <img src="{% static 'images/icons/icon-calling.svg' %}" width="20" height="20" alt="" loading="lazy" />
+            <a href="tel:+8801911717490">+88 01911 717 490</a>
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <nav class="footer-col" aria-labelledby="footer-account">
+            <h2 class="footer-col__title" id="footer-account">My Account</h2>
+            <ul>
+              <li><a href="{% url 'core:account' %}">My Account</a></li>
+              <li><a href="{% url 'orders:cart' %}">Our stores</a></li>
+              <li><a href="address.html">Contact us</a></li>
+              <li><a href="index.html#blog">Career</a></li>
+              <li><a href="{% url 'catalog:shop' %}">Specials</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="footer-help">
+            <h2 class="footer-col__title" id="footer-help">Help &amp; Guide</h2>
+            <ul>
+              <li><a href="index.html#services">Help Center</a></li>
+              <li><a href="{% url 'catalog:shop' %}">How to Buy</a></li>
+              <li><a href="{% url 'orders:checkout' %}">Shipping &amp; Delivery</a></li>
+              <li><a href="index.html#services">Product Policy</a></li>
+              <li><a href="{% url 'orders:cart' %}">How to Return</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="footer-categories">
+            <h2 class="footer-col__title" id="footer-categories">Categories</h2>
+            <ul>
+              <li><a href="{% url 'catalog:shop' %}">House Plants</a></li>
+              <li><a href="{% url 'catalog:shop' %}">Potter Plants</a></li>
+              <li><a href="{% url 'catalog:shop' %}">Seeds</a></li>
+              <li><a href="{% url 'catalog:shop' %}">Small Plants</a></li>
+              <li><a href="{% url 'catalog:shop' %}">Accessories</a></li>
+            </ul>
+          </nav>
+
+          <div class="footer-col">
+            <h2 class="footer-col__title">Social Media</h2>
+            <ul class="social">
+              <li>
+                <a href="https://www.instagram.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="{% static 'images/icons/social-instagram.svg' %}" width="20" height="20" alt="Instagram" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="{% static 'images/icons/social-facebook.svg' %}" width="20" height="20" alt="Facebook" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="{% static 'images/icons/social-twitter.svg' %}" width="20" height="20" alt="Twitter" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.youtube.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="{% static 'images/icons/social-youtube.svg' %}" width="20" height="20" alt="YouTube" loading="lazy" />
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank">
+                  <img src="{% static 'images/icons/social-linkedin.svg' %}" width="20" height="20" alt="LinkedIn" loading="lazy" />
+                </a>
+              </li>
+            </ul>
+
+            <div class="accept">
+              <h3 class="footer-col__title">We accept</h3>
+              <img
+                src="{% static 'images/payment-methods.png' %}"
+                width="224"
+                height="30"
+                alt="Accepted payment methods"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+
+        <p class="copyright">© 2021 GreenShop. All Rights Reserved.</p>
+      </div>
+    </footer>

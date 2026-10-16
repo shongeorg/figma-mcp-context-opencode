@@ -1,0 +1,182 @@
+/* Glue styles for the pages Django adds on top of the static build.
+ *
+ * Everything here is additive and narrowly scoped: the verified layout,
+ * components and the mobile app layer all come from style.css and the five
+ * mobile-*.css files. This file only covers markup that has no counterpart
+ * in the static site — flash messages, empty states, the standalone auth
+ * pages and the address form.
+ */
+
+/* --------------------------------------------------------- flash messages */
+
+.site-messages:empty {
+  display: none;
+}
+
+.site-message {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  border: 1px solid transparent;
+}
+
+.site-message--success {
+  background: #eaf6ec;
+  border-color: #bfe3c5;
+  color: #2f7d32;
+}
+
+.site-message--error {
+  background: #fdecec;
+  border-color: #f3c1c1;
+  color: #a12622;
+}
+
+.site-message--warning {
+  background: #fdf3e2;
+  border-color: #f2ddb4;
+  color: #8a5b12;
+}
+
+.site-message--info {
+  background: #eef4fb;
+  border-color: #cddff2;
+  color: #2c5578;
+}
+
+/* ------------------------------------------------------------- empty state */
+
+.empty-state {
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+.empty-state a {
+  color: var(--green);
+}
+
+/* ------------------------------------------------------------- auth pages */
+
+.auth-page {
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 5vw, 64px) var(--gutter);
+  min-height: 58vh;
+}
+
+.auth-page .dialog-card {
+  inline-size: min(100%, 460px);
+}
+
+/* The card is the page here, so it never gets the modal's close button. */
+.auth-page .dialog-close {
+  display: none;
+}
+
+.auth-errors {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: #fdecec;
+  border: 1px solid #f3c1c1;
+  color: #a12622;
+  font-size: 14px;
+}
+
+.auth-errors ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.field-error {
+  display: block;
+  margin: 4px 0 0;
+  color: #a12622;
+  font-size: 13px;
+}
+
+.auth-demo {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  /* #login-dialog / #register-dialog win on padding and size; this only
+     needs to stop forcing the desktop grid. */
+  #login-dialog.auth-page,
+  #register-dialog.auth-page {
+    display: block;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .auth-page .dialog-card,
+  .auth-page .dialog-card--pad {
+    inline-size: 100%;
+  }
+}
+
+/* ----------------------------------------------------------- shop heading */
+
+.shop-title {
+  margin: 0 0 4px;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shop-count {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ----------------------------------------------------------- order detail */
+
+.order-meta {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0 0;
+}
+
+/* ---------------------------------------------------------- address form */
+
+.address-form__field {
+  margin: 0 0 16px;
+}
+
+.address-form__field label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.address-form__field label abbr {
+  color: #a12622;
+  text-decoration: none;
+}
+
+.address-form__field .input,
+.address-form__field select.input {
+  inline-size: 100%;
+}
+
+.address-form__field input[type="checkbox"] {
+  inline-size: auto;
+}

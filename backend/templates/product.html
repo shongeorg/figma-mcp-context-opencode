@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ product.short_description|default:product.name }}{% endblock %}
+
+{% block main %}
+      <div class="container">
+        <!-- Mobile-only screen header -->
+        <div class="m-topbar m-topbar--media">
+          <a class="m-topbar__btn" href="{% url 'catalog:shop' %}" aria-label="Back to shop">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="m14.5 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <form method="post" action="{% url 'catalog:wishlist-toggle' product.pk %}">
+            {% csrf_token %}
+            <button class="m-topbar__btn m-topbar__btn--heart" type="submit" data-wishlist-toggle aria-pressed="{% if in_wishlist %}true{% else %}false{% endif %}" aria-label="{% if in_wishlist %}Remove{% else %}Add{% endif %} {{ product.name }} {% if in_wishlist %}from{% else %}to{% endif %} wishlist">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span>
+          <a href="{% url 'catalog:shop' %}">Shop</a> <span aria-hidden="true">/</span>
+          {% if breadcrumb_category %}
+          <a href="{{ breadcrumb_category.get_absolute_url }}">{{ breadcrumb_category.name }}</a> <span aria-hidden="true">/</span>
+          {% endif %}
+          <span aria-current="page">{{ product.name }}</span>
+        </nav>
+
+        <div class="product">
+          <!-- Gallery -->
+          {% if product.image_url %}
+          <div class="gallery" data-gallery>
+            <div
+              class="gallery__thumbs"
+              role="tablist"
+              aria-label="Product images"
+            >
+              {% for image in product.images.all %}
+              <button
+                type="button"
+                role="tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                {% if not forloop.first %}tabindex="-1"{% endif %}
+                data-gallery-thumb
+              >
+                <img
+                  src="{{ image.image.url }}"
+                  width="100"
+                  height="100"
+                  data-full="{{ image.image.url }}"
+                  alt="{{ image.alt }}"
+                />
+              </button>
+              {% endfor %}
+            </div>
+
+            <div class="gallery__main">
+              <img
+                src="{{ product.image_url }}"
+                width="444"
+                height="444"
+                alt="{{ product.primary_image.alt }}"
+                fetchpriority="high"
+                decoding="async"
+                data-gallery-main
+              />
+              <button class="gallery__zoom" type="button" aria-label="Zoom image">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M11 8v6M8 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Details -->
+          <div class="product-info">
+            <h1 class="product-info__title">{{ product.name }}</h1>
+
+            <!-- Mobile-only score chip (Figma mobile frame) -->
+            <p class="score-chip">
+              <span class="score-chip__star" aria-hidden="true">&#9733;</span>
+              <strong>{{ product.rating|floatformat:1 }}</strong> <span class="score-chip__count">({{ product.reviews_count }})</span>
+              <span class="visually-hidden">rated {{ product.rating|floatformat:1 }} out of 5 from {{ product.reviews_count }} reviews</span>
+            </p>
+
+            <div class="product-info__row">
+              <p class="product-info__price">
+                {{ CURRENCY }}{{ product.price|floatformat:2 }}
+                {% if product.old_price %}
+                <span class="price--old">{{ CURRENCY }}{{ product.old_price|floatformat:2 }}</span>
+                {% endif %}
+              </p>
+              <p class="rating">
+                <span class="rating__stars">
+                  {% for i in "12345" %}
+                  <img src="{% static 'images/icons/icon-star.svg' %}" width="16" height="16" alt=""{% if forloop.counter > product.rating %} class="is-off"{% endif %} />
+                  {% endfor %}
+                </span>
+                <a href="#tab-rev">Review</a>
+              </p>
+            </div>
+
+            <hr />
+
+            <div class="product-info__block">
+              <p class="product-info__label">Description</p>
+              <p class="product-info__text">
+                {{ product.short_description|default:product.description }}
+              </p>
+            </div>
+
+            {% if sizes %}
+            <div class="product-info__block">
+              <p class="product-info__label">Size</p>
+              <div class="sizes" data-press-group>
+                {% for ps in sizes %}
+                <button type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-size-id="{{ ps.pk }}"{% if ps.stock < 1 %} disabled{% endif %}>{{ ps.size.name }}</button>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            <form class="buy-row" method="post" action="{% url 'orders:add' product.pk %}">
+              {% csrf_token %}
+              {% if sizes %}<input type="hidden" name="size" id="size-input" value="{{ sizes.0.pk }}" />{% endif %}
+              <span class="buy-row__qty" aria-hidden="true">Qty</span>
+              <div class="stepper" data-stepper>
+                <button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>
+                <input
+                  type="number"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  max="999"
+                  aria-label="Quantity"
+                />
+                <button type="button" data-step="1" aria-label="Increase quantity">+</button>
+              </div>
+              <p class="buy-row__price">{{ CURRENCY }}{{ product.price|floatformat:2 }}</p>
+              <button class="btn btn--primary" type="submit">
+                <span class="lbl--wide">Add to cart</span>
+                <span class="lbl--narrow">Buy Now</span>
+              </button>
+              <a class="buy-row__cart" href="{% url 'orders:cart' %}" aria-label="Go to cart">
+                <img src="{% static 'images/icons/icon-cart.svg' %}" width="24" height="24" alt="" />
+              </a>
+            </form>
+
+            <div class="meta">
+              <p><span>SKU:</span> {{ product.sku }}</p>
+              {% if product.category %}
+              <p><span>Category:</span> <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+              {% endif %}
+              <p><span>Tags:</span> {{ product.tags.all|join:", " }}</p>
+            </div>
+
+            <p class="share">
+              <span>Share:</span>
+              <a href="https://www.facebook.com/" rel="noopener noreferrer" target="_blank">
+                <img src="{% static 'images/icons/social-facebook.svg' %}" width="18" height="18" alt="Share on Facebook" />
+              </a>
+              <a href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank">
+                <img src="{% static 'images/icons/social-linkedin.svg' %}" width="18" height="18" alt="Share on LinkedIn" />
+              </a>
+              <a href="https://twitter.com/" rel="noopener noreferrer" target="_blank">
+                <img src="{% static 'images/icons/social-twitter.svg' %}" width="18" height="18" alt="Share on Twitter" />
+              </a>
+              <a href="https://www.youtube.com/" rel="noopener noreferrer" target="_blank">
+                <img src="{% static 'images/icons/social-youtube.svg' %}" width="18" height="18" alt="Share on YouTube" />
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <section class="tabs" data-tabs aria-label="Product information">
+          <div class="tabs__list" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              id="tab-desc"
+              aria-controls="panel-desc"
+              aria-selected="true"
+            >
+              Product Description
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-rev"
+              aria-controls="panel-rev"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              Reviews ({{ product.reviews_count }})
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-add"
+              aria-controls="panel-add"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              Add a Review
+            </button>
+          </div>
+
+          <div
+            class="tabs__panel"
+            id="panel-desc"
+            role="tabpanel"
+            aria-labelledby="tab-desc"
+            tabindex="0"
+          >
+            {{ product.description|default:product.short_description|linebreaks }}
+          </div>
+
+          <div
+            class="tabs__panel"
+            id="panel-rev"
+            role="tabpanel"
+            aria-labelledby="tab-rev"
+            tabindex="0"
+            hidden
+          >
+            {% for review in reviews %}
+            <article>
+              <p class="meta"><span>{{ review.user }}</span> · {{ review.created_at|date:"M j, Y" }}</p>
+              <p class="rating">
+                <span class="rating__stars">
+                  {% for i in "12345" %}
+                  <img src="{% static 'images/icons/icon-star.svg' %}" width="16" height="16" alt=""{% if forloop.counter > review.rating %} class="is-off"{% endif %} />
+                  {% endfor %}
+                </span>
+                <span class="visually-hidden">rated {{ review.rating }} out of 5</span>
+              </p>
+              {% if review.title %}<h3>{{ review.title }}</h3>{% endif %}
+              <p>{{ review.body|linebreaksbr }}</p>
+            </article>
+            {% empty %}
+            <p>
+              There are no reviews yet. Be the first to review
+              &ldquo;{{ product.name }}&rdquo;.
+            </p>
+            {% endfor %}
+
+            {% if paginator.num_pages > 1 %}
+            <nav class="pagination" aria-label="Reviews pagination">
+              {% if reviews.has_previous %}
+              <a href="?page={{ reviews.previous_page_number }}" aria-label="Previous page">&larr;</a>
+              {% endif %}
+              {% for n in paginator.page_range %}
+              {% if n == reviews.number %}
+              <span aria-current="page">{{ n }}</span>
+              {% else %}
+              <a href="?page={{ n }}" aria-label="Page {{ n }}">{{ n }}</a>
+              {% endif %}
+              {% endfor %}
+              {% if reviews.has_next %}
+              <a href="?page={{ reviews.next_page_number }}" aria-label="Next page">
+                <img
+                  src="{% static 'images/icons/arrow-right-outline.svg' %}"
+                  width="18"
+                  height="18"
+                  alt=""
+                  loading="lazy"
+                />
+              </a>
+              {% endif %}
+            </nav>
+            {% endif %}
+          </div>
+
+          <div
+            class="tabs__panel"
+            id="panel-add"
+            role="tabpanel"
+            aria-labelledby="tab-add"
+            tabindex="0"
+            hidden
+          >
+            <form method="post" action="{% url 'catalog:add-review' product.pk %}">
+              {% csrf_token %}
+              <label class="visually-hidden" for="review-rating">Your rating</label>
+              <select class="select" id="review-rating" name="rating" required>
+                <option value="">Choose a rating</option>
+                <option value="5">5 — Excellent</option>
+                <option value="4">4 — Very good</option>
+                <option value="3">3 — Average</option>
+                <option value="2">2 — Poor</option>
+                <option value="1">1 — Terrible</option>
+              </select>
+              <label class="visually-hidden" for="review-title">Review title</label>
+              <input class="input" id="review-title" name="title" type="text" maxlength="120" />
+              <label class="visually-hidden" for="review-body">Your review</label>
+              <textarea class="textarea" id="review-body" name="body" rows="5" required></textarea>
+              <button class="btn btn--primary" type="submit">Submit review</button>
+              <p class="form-status" data-status role="status"></p>
+            </form>
+          </div>
+        </section>
+
+        <!-- Related -->
+        {% if related %}
+        <section class="related" aria-labelledby="related-title">
+          <h2 class="related__title" id="related-title">Related products</h2>
+          <hr />
+          <div class="related-grid">
+            {% for r in related %}
+            <a class="mini-card" href="{{ r.get_absolute_url }}">
+              <span class="mini-card__media">
+                {% if r.image_url %}
+                <img
+                  src="{{ r.image_url }}"
+                  width="219"
+                  height="255"
+                  alt="{{ r.name }}"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {% endif %}
+              </span>
+              <span class="mini-card__title">{{ r.name }}</span>
+              <span class="mini-card__price">{{ CURRENCY }}{{ r.price|floatformat:2 }}</span>
+            </a>
+            {% endfor %}
+          </div>
+          <div class="dots" aria-hidden="true">
+            <span></span><span aria-current="true"></span><span></span>
+          </div>
+        </section>
+        {% endif %}
+      </div>
+{% endblock %}
+
+{% block extra_body %}
+  {% if sizes %}
+  <script>
+    (function () {
+      var group = document.querySelector(".sizes");
+      var hidden = document.getElementById("size-input");
+      if (!group || !hidden) return;
+      group.addEventListener("click", function (event) {
+        var btn = event.target.closest("button[data-size-id]");
+        if (btn) hidden.value = btn.dataset.sizeId;
+      });
+    })();
+  </script>
+  {% endif %}
+{% endblock %}

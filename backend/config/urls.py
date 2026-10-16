@@ -16,6 +16,11 @@ admin.site.index_title = "Catalogue, orders and customers"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # The three storefront apps each own their slice of the URL space, so
+    # `shop/`, `product/<slug>/` and `cart/` sit flat under the site root.
+    path("", include("core.urls")),
+    path("", include("catalog.urls")),
+    path("", include("orders.urls")),
 ]
 
 if settings.DEBUG:

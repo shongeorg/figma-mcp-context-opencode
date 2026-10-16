@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from django.contrib import admin, messages
-from django.utils.html import format_html
+from django.utils.html import format_html, mark_safe
 
 from . import services
 from .models import (
@@ -82,10 +82,13 @@ class CategoryAdmin(admin.ModelAdmin):
 
     @admin.display(description="level", ordering="parent")
     def depth_badge(self, obj):
-        level = obj.depth
-        if level == 0:
-            return format_html('<span style="color:#46a358;font-weight:600">root</span>')
-        return format_html('<span style="color:#727272">└ {}</span>', "&nbsp;" * (level * 3) + level)
+        if obj.depth == 0:
+            # Constant markup — format_html() needs at least one argument.
+            return mark_safe('<span style="color:#46a358;font-weight:600">root</span>')
+        indent = "&nbsp;" * (obj.depth * 3)
+        return format_html(
+            '<span style="color:#727272">└ {}level {}</span>', indent, obj.depth
+        )
 
     @admin.display(description="products")
     def product_count_col(self, obj):
@@ -140,13 +143,16 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.display(description="price")
     def price_col(self, obj):
+        # Format the numbers first: format_html() escapes its arguments, and
+        # a SafeString refuses to accept `,.2f`.
+        price = f"${obj.price:,.2f}"
         if obj.is_on_sale:
             return format_html(
-                '<span style="color:#46a358;font-weight:600">${:,.2f}</span> '
-                '<s style="color:#a5a5a5">${:,.2f}</s> <small>−{}%</small>',
-                obj.price, obj.old_price, obj.discount_percent,
+                '<span style="color:#46a358;font-weight:600">{}</span> '
+                '<s style="color:#a5a5a5">{}</s> <small>−{}%</small>',
+                price, f"${obj.old_price:,.2f}", obj.discount_percent,
             )
-        return f"${obj.price:,.2f}"
+        return price
 
     @admin.display(description="image", ordering="name")
     def thumb(self, obj):

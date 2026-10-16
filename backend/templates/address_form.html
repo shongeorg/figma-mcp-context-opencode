@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if editing %}Edit Address{% else %}Add Address{% endif %} — GreenShop{% endblock %}
+
+{% block main %}
+      <div class="container account">
+        <div class="account-inner">
+          <nav class="account-nav" aria-label="Account">
+            <a href="{% url 'core:account' %}">Account</a>
+            <a href="{% url 'orders:list' %}">My Orders</a>
+            <a href="{% url 'core:address-list' %}" aria-current="page">Address Book</a>
+            <a href="{% url 'catalog:wishlist' %}">Wishlist</a>
+            <a href="{% url 'core:logout' %}">Logout</a>
+          </nav>
+
+          <div class="account-main">
+            <h1>{% if editing %}Edit Address{% else %}Add a New Address{% endif %}</h1>
+
+            <form class="address-form" method="post" action="">
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+                <div class="auth-errors">
+                  <ul>
+                    {% for error in form.non_field_errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              {% for field in form %}
+                <p class="address-form__field">
+                  <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<abbr title="required">*</abbr>{% endif %}
+                  </label>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <span class="field-error">{{ error }}</span>
+                  {% endfor %}
+                </p>
+              {% endfor %}
+
+              <p class="account-actions">
+                <button class="btn btn--primary" type="submit">
+                  {% if editing %}Save changes{% else %}Save address{% endif %}
+                </button>
+                <a class="btn" href="{% url 'core:address-list' %}">Cancel</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+{% endblock %}

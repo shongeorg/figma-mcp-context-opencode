@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout — {{ SITE_NAME }}{% endblock %}
+
+{% block main %}
+      <div class="container">
+        <!-- Mobile-only screen header -->
+        <div class="m-topbar">
+          <a class="m-topbar__btn" href="{% url 'orders:cart' %}" aria-label="Back to cart">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="m14.5 5-6 7 6 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <p class="m-topbar__title" aria-hidden="true">Checkout</p>
+          <span class="m-topbar__spacer" aria-hidden="true"></span>
+        </div>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span>
+          <a href="{% url 'catalog:shop' %}">Shop</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">Checkout</span>
+        </nav>
+
+        <form
+          class="checkout"
+          method="post"
+          action=""
+          novalidate
+        >
+          {% csrf_token %}
+          <!-- Billing address -->
+          <div class="billing">
+            <h1 class="block-title">Billing Address</h1>
+
+            <div class="billing__fields">
+              {{ form.non_field_errors }}
+              <div class="form-grid">
+                <p class="field">
+                  <label class="field__label" for="{{ form.full_name.id_for_label }}"
+                    >Full Name <span class="req">*</span></label
+                  >
+                  {{ form.full_name }}
+                  {% if form.full_name.errors %}{{ form.full_name.errors }}{% endif %}
+                </p>
+                <p class="field">
+                  <label class="field__label" for="{{ form.email.id_for_label }}"
+                    >Email address <span class="req">*</span></label
+                  >
+                  {{ form.email }}
+                  {% if form.email.errors %}{{ form.email.errors }}{% endif %}
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="{{ form.country.id_for_label }}"
+                    >Country / Region <span class="req">*</span></label
+                  >
+                  {{ form.country }}
+                  {% if form.country.errors %}{{ form.country.errors }}{% endif %}
+                </p>
+                <p class="field">
+                  <label class="field__label" for="{{ form.city.id_for_label }}"
+                    >Town / City <span class="req">*</span></label
+                  >
+                  {{ form.city }}
+                  {% if form.city.errors %}{{ form.city.errors }}{% endif %}
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="{{ form.address_line.id_for_label }}"
+                    >Street Address <span class="req">*</span></label
+                  >
+                  {{ form.address_line }}
+                  {% if form.address_line.errors %}{{ form.address_line.errors }}{% endif %}
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="{{ form.region.id_for_label }}"
+                    >State / Region</label
+                  >
+                  {{ form.region }}
+                  {% if form.region.errors %}{{ form.region.errors }}{% endif %}
+                </p>
+                <p class="field">
+                  <label class="field__label" for="{{ form.postal_code.id_for_label }}"
+                    >Zip</label
+                  >
+                  {{ form.postal_code }}
+                  {% if form.postal_code.errors %}{{ form.postal_code.errors }}{% endif %}
+                </p>
+
+                <p class="field">
+                  <label class="field__label" for="{{ form.phone.id_for_label }}"
+                    >Phone Number</label
+                  >
+                  {{ form.phone }}
+                  {% if form.phone.errors %}{{ form.phone.errors }}{% endif %}
+                </p>
+              </div>
+
+              <label class="radio shipping-toggle">
+                <input type="checkbox" name="shipDifferent" />
+                Ship to a different address?
+              </label>
+
+              <p class="field order-notes">
+                <label class="field__label" for="{{ form.note.id_for_label }}"
+                  >Order notes (optional)</label
+                >
+                {{ form.note }}
+                {% if form.note.errors %}{{ form.note.errors }}{% endif %}
+              </p>
+            </div>
+          </div>
+
+          <!-- Your order -->
+          <aside class="order-panel" aria-labelledby="order-title">
+            <h2 class="block-title" id="order-title">Your Order</h2>
+
+            <div class="order-panel__head">
+              <span>Products</span>
+              <span>Subtotal</span>
+            </div>
+
+            <ul class="order-list">
+              {% for line in lines %}
+              <li>
+                <span class="order-list__media">
+                  {% if line.product.image_url %}
+                  <img
+                    src="{{ line.product.image_url }}"
+                    width="70"
+                    height="70"
+                    alt=""
+                    {% if not forloop.first %}loading="lazy"{% endif %}
+                  />
+                  {% endif %}
+                </span>
+                <span class="order-list__body">
+                  <span class="order-list__name">{{ line.product.name }}</span>
+                  <span class="order-list__sku">SKU: {{ line.product.sku }}</span>
+                </span>
+                <span class="order-list__qty">(x&nbsp;{{ line.quantity }})</span>
+                <span class="order-list__sum">{{ CURRENCY }}{{ line.line_total|floatformat:2 }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <a class="coupon-link" href="{% url 'orders:cart' %}#coupon-code"
+              ><span>Have a coupon code?</span> Click here</a
+            >
+
+            <div class="order-indent">
+              <dl class="totals">
+                <div>
+                  <dt>Subtotal</dt>
+                  <dd>{{ CURRENCY }}{{ subtotal|floatformat:2 }}</dd>
+                </div>
+                <div>
+                  <dt>Coupon Discount</dt>
+                  <dd>(-) {{ CURRENCY }}{{ discount|floatformat:2 }}</dd>
+                </div>
+                <div>
+                  <dt>Shiping</dt>
+                  <dd>
+                    {{ CURRENCY }}{{ shipping|floatformat:2 }}
+                    <span class="note">View shipping charge</span>
+                  </dd>
+                </div>
+                <div class="divider" aria-hidden="true"></div>
+                <div class="total">
+                  <dt>Total</dt>
+                  <dd class="value">{{ CURRENCY }}{{ total|floatformat:2 }}</dd>
+                </div>
+              </dl>
+
+              <h3 class="block-title pay-title">Payment Method</h3>
+
+              <fieldset class="payments">
+                <legend class="visually-hidden">Choose a payment method</legend>
+                {{ form.payment_method }}
+                {% if form.payment_method.errors %}{{ form.payment_method.errors }}{% endif %}
+              </fieldset>
+
+              <button class="btn btn--primary btn--block" type="submit">
+                Place Order
+              </button>
+              <p class="form-status" data-status role="status"></p>
+            </div>
+          </aside>
+        </form>
+      </div>
+{% endblock %}

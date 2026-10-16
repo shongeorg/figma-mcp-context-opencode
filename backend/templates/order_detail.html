@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order {{ order.number }} — GreenShop{% endblock %}
+
+{% block main %}
+      <div class="container account">
+        <div class="account-inner">
+          <nav class="account-nav" aria-label="Account">
+            <a href="{% url 'core:account' %}">Account</a>
+            <a href="{% url 'orders:list' %}" aria-current="page">My Orders</a>
+            <a href="{% url 'core:address-list' %}">Address Book</a>
+            <a href="{% url 'catalog:wishlist' %}">Wishlist</a>
+            <a href="{% url 'core:logout' %}">Logout</a>
+          </nav>
+
+          <div class="account-main">
+            <h1>Order {{ order.number }}</h1>
+
+            <p class="order-meta">
+              Placed {{ order.created_at|date:"F j, Y" }} —
+              <strong>{{ order.get_status_display }}</strong>
+              {% if order.is_paid %}— Paid {{ order.paid_at|date:"M j, Y" }}
+              {% else %}— Payment on delivery{% endif %}
+            </p>
+
+            {% if order.status == 'new' %}
+              <p class="empty-state">
+                We have received your order request and will confirm it by email.
+              </p>
+            {% endif %}
+
+            <h2>Items</h2>
+            <ul class="order-list">
+              {% for item in order.items.all %}
+                <li>
+                  <span class="order-list__body">
+                    <span class="order-list__name">
+                      {% if item.product %}
+                        <a href="{{ item.product.get_absolute_url }}">{{ item.product_name }}</a>
+                      {% else %}
+                        {{ item.product_name }}
+                      {% endif %}
+                    </span>
+                    <span class="order-list__sku">
+                      {{ item.sku }}
+                      {% if item.size_name %} — Size: {{ item.size_name }}{% endif %}
+                      — Qty: {{ item.quantity }}
+                      — {{ CURRENCY }}{{ item.unit_price|floatformat:2 }} each
+                    </span>
+                  </span>
+                  <span class="order-list__sum">
+                    {{ CURRENCY }}{{ item.line_total|floatformat:2 }}
+                  </span>
+                </li>
+              {% endfor %}
+            </ul>
+
+            <h2>Summary</h2>
+            <ul class="order-list">
+              <li>
+                <span class="order-list__body">
+                  <span class="order-list__name">Subtotal</span>
+                </span>
+                <span class="order-list__sum">{{ CURRENCY }}{{ order.subtotal|floatformat:2 }}</span>
+              </li>
+              {% if order.discount %}
+                <li>
+                  <span class="order-list__body">
+                    <span class="order-list__name">
+                      Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}
+                    </span>
+                  </span>
+                  <span class="order-list__sum">−{{ CURRENCY }}{{ order.discount|floatformat:2 }}</span>
+                </li>
+              {% endif %}
+              <li>
+                <span class="order-list__body">
+                  <span class="order-list__name">Shipping</span>
+                </span>
+                <span class="order-list__sum">
+                  {% if order.shipping %}{{ CURRENCY }}{{ order.shipping|floatformat:2 }}
+                  {% else %}Free{% endif %}
+                </span>
+              </li>
+              <li>
+                <span class="order-list__body">
+                  <span class="order-list__name"><strong>Total</strong></span>
+                </span>
+                <span class="order-list__sum"><strong>{{ CURRENCY }}{{ order.total|floatformat:2 }}</strong></span>
+              </li>
+            </ul>
+
+            <h2>Delivery</h2>
+            <p>
+              {{ order.full_name }}<br />
+              {{ order.address_line }}<br />
+              {{ order.city }}{% if order.region %}, {{ order.region }}{% endif %}
+              {% if order.postal_code %} {{ order.postal_code }}{% endif %}<br />
+              {{ order.country }}
+            </p>
+            {% if order.note %}
+              <p><strong>Note:</strong> {{ order.note }}</p>
+            {% endif %}
+
+            <p class="account-actions">
+              <a class="btn btn--primary" href="{% url 'catalog:shop' %}">Continue shopping</a>
+              <a class="btn" href="{% url 'orders:list' %}">All orders</a>
+            </p>
+          </div>
+        </div>
+      </div>
+{% endblock %}

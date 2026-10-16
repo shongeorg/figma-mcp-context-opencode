@@ -92,12 +92,15 @@ class OrderAdmin(admin.ModelAdmin):
 
     @admin.display(description="total", ordering="total")
     def total_col(self, obj):
+        # Pre-format: format_html() escapes its arguments into SafeStrings,
+        # which then refuse the `,.2f` format spec.
+        total = f"${obj.total:,.2f}"
         if obj.discount:
             return format_html(
-                '<strong>${:,.2f}</strong> <small style="color:#46a358">−${:,.2f}</small>',
-                obj.total, obj.discount,
+                '<strong>{}</strong> <small style="color:#46a358">−{}</small>',
+                total, f"${obj.discount:,.2f}",
             )
-        return format_html("<strong>${:,.2f}</strong>", obj.total)
+        return format_html("<strong>{}</strong>", total)
 
     @admin.display(description="paid", boolean=True)
     def paid_flag(self, obj):

@@ -49,7 +49,8 @@ class UserAdmin(BaseUserAdmin):
         )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("avatar")
+        # No select_related: every listed column comes from the user row.
+        return super().get_queryset(request)
 
 
 @admin.register(Address)
@@ -71,10 +72,6 @@ class SubscriberAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
     date_hierarchy = "created_at"
     actions = ("activate", "deactivate")
-
-    @admin.display(description="subscribed")
-    def subscribed_since(self, obj):
-        return format_html("<small>{}</small>", obj.created_at.strftime("%d %b %Y"))
 
     @admin.action(description="Activate selected subscribers")
     def activate(self, request, queryset):
