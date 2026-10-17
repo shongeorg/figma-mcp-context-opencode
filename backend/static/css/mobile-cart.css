@@ -1,14 +1,6 @@
-/* ==========================================================================
-   GreenShop — mobile cart & checkout (Figma frames 9 & 10).
-   The cart table reflows into elevated cards and the totals rise as a sheet;
-   checkout swaps the long billing form for saved-address and payment cards.
-   ========================================================================== */
 
 @media (max-width: 640px) {
-  /* ============================== cart ================================= */
 
-  /* Reset the 720px stacked-row treatment from style.css first — it is more
-     specific than a bare `.cart-table td`, so it has to be beaten head-on. */
   .cart-table,
   .cart-table tbody,
   .cart-table tbody tr,
@@ -63,8 +55,6 @@
     box-shadow: var(--m-shadow);
   }
 
-  /* dissolve the cell + item wrappers so the media, body, price, stepper and
-     trash button can each occupy their own grid track */
   .cart-table tbody tr td.col-product,
   .cart-item {
     display: contents;
@@ -158,7 +148,6 @@
     justify-self: end;
   }
 
-  /* --------------------------------------------- totals as a sheet ---- */
   .summary {
     position: relative;
     margin-block-start: 22px;
@@ -264,7 +253,6 @@
     font-size: 14px;
   }
 
-  /* ============================ checkout =============================== */
   .m-shipping {
     display: block;
     margin-block-end: 26px;
@@ -336,7 +324,6 @@
     line-height: 1;
   }
 
-  /* the long billing form is replaced by the saved-address cards above */
   .billing {
     display: none;
   }

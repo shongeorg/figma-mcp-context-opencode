@@ -1,8 +1,13 @@
-# GreenShop — макет Figma → HTML/CSS
+# GreenShop — Figma → HTML/CSS + Python/Django-бекенд
 
-> Багатосторінковий статичний сайт інтернет-магазину рослин, відтворений з макета
+> Багатосторінковий сайт інтернет-магазину рослин, відтворений з макета
 > Figma на чистому HTML + CSS (без фреймворків), з окремим мобільним шаром
 > під екрани застосунку та повністю робочою навігацією.
+>
+> На гілці `dev` той самий макет працює на **Python-бекенді**: Django 6.1
+> на Python 3.14, серверне рендерення, PostgreSQL (Neon), адмінка з CRUD
+> і JSON API під майбутній мобільний застосунок — усе розписано в розділі
+> [Бекенд на Django](#бекенд-на-django-гілка-dev).
 
 **🟢 [Live demo](https://figma-mcp-context-opencode.vercel.app)** ·
 **🎨 [Макет у Figma — GreenShop](https://www.figma.com/design/GDInt7mjgpSp3YUE2cgxN0/GreenShop)**
@@ -61,15 +66,16 @@
 
 | | |
 |---|---|
-| Фреймворк | Django 6.1.2 (Python 3.14) |
+| Мова · фреймворк | **Python 3.14** · Django 6.1.2 (код із типовими анотаціями, без зайвого) |
 | База даних | **Neon PostgreSQL 18**, DSN у `backend/.env` → змінна `NEON_DB` |
 | Драйвер | psycopg 3.3.6 · Pillow 12.3.0 |
 | Статика | власні файли в `backend/static/` + WhiteNoise |
 | Оплата | **немає** — замовлення потрапляє в чергу, адмін обробляє вручну |
 
-Три застосунки: `core` (користувачі, адреси, підписники), `catalog`
+Чотири застосунки: `core` (користувачі, адреси, підписники), `catalog`
 (категорії-дерево, товари, розміри, відгуки, обране), `orders` (кошик,
-замовлення).
+замовлення), `api` (JSON API під `/api/` + модель блогу `BlogPost`) —
+під майбутній мобільний застосунок, без DRF, на тій самій сесії.
 
 ### Підняття з нуля
 
@@ -80,7 +86,7 @@ python -m venv .venv
 
 # .env уже лежить поруч із manage.py (не комітиться):
 #   NEON_DB=postgresql://...      ← DSN Neon
-#   DJANGO_ENV=dev
+#   DJANGO_ENV=dev        ← dev | prod | test (test → SQLite у пам'яті)
 #   DJANGO_SECRET_KEY=...
 
 .\.venv\Scripts\python.exe manage.py migrate
@@ -114,6 +120,101 @@ python -m venv .venv
   Адмін підтверджує, пакує, відправляє, скасовує або позначає як оплачене.
 - **Відгуки** — з модерацією: після погодження перераховується рейтинг товару.
 - **Ізоляція** — замовлення, адреси та обране бачить лише їх власник.
+- **Блог** — модель `BlogPost` ведеться в адмінці (прапорець публікації,
+  дата, теги); пости показуються в секції «Our Blog Posts» на головній
+  (`/#blog`) і віддаються JSON-ом через `/api/blog/`. Окремої сторінки
+  `/blog/` немає — пост відкривається на місці.
+- **REST API** — усі сценарії магазину дублюються JSON-ом під `/api/`
+  (див. [Ендпоінти](#ендпоінти)): той самий сервісний шар `services.py`,
+  ті самі правила залишків, злиття кошика при вході та модерація відгуків.
+- **Швидкість** — мінімальні SELECT-и (`select_related`/`prefetch_related`),
+  кеші підрахунків, WhiteNoise для статики, атомарні записи через
+  `AtomicWritesMiddleware`. Локальні заміри (`perf_probe.py`): головна
+  ~200 мс / 4 запити, каталог ~235 мс / 5, категорія ~280 мс / 6,
+  картка товару ~480 мс / 11, кошик ~100 мс / 2.
+- **Слайдер** — герой на головній зібраний на Swiper; шапка сайту має
+  вищий шар за слайдером, тому кліки по навігації ніколи не «з'їдаються».
+
+### Ендпоінти
+
+#### Сторінки магазину
+
+| Метод | URL | Що робить | Доступ |
+|---|---|---|---|
+| GET | `/` | Головна: герой-Swiper, добірки товарів, секція блогу `#blog`, підписка | публічна |
+| GET | `/shop/` | Каталог; фільтри `?category=&size=&tag=&price_min=&price_max=&q=&sale=&featured=&sort=&page=` | публічна |
+| GET | `/shop/category/<slug>/` | Категорія з піддеревом | публічна |
+| GET | `/product/<slug>/` | Картка товару: галерея, розміри, відгуки | публічна |
+| GET | `/cart/` | Кошик: рядки, купон, підсумки (зі знижкою та доставкою) | кошик сесії |
+| POST | `/cart/add/<product_id>/` | Додати в кошик (`quantity`, `size_id`) | кошик сесії |
+| POST | `/cart/update/<line_id>/` | Змінити кількість (`quantity`; `0` — видалити позицію) | кошик сесії |
+| POST | `/cart/remove/<line_id>/` | Видалити позицію | кошик сесії |
+| POST | `/cart/coupon/` | Застосувати або зняти купон `GREEN10` (`code`) | кошик сесії |
+| GET/POST | `/checkout/` | Оформлення: форма → замовлення `GS-YYMMDD-XXXX` зі статусом `new` | вхід |
+| GET | `/orders/` | Історія замовлень | вхід |
+| GET | `/orders/<number>/` | Деталі замовлення | власник / адмін |
+| GET/POST | `/review/<product_id>/` | Відгук → на модерацію (один на товар від користувача) | вхід |
+| GET | `/wishlist/` | Обране | вхід |
+| POST | `/wishlist/toggle/<product_id>/` | Додати / прибрати з обраного | вхід |
+| GET/POST | `/login/`, `/register/` | Вхід, реєстрація (поля `Phone (optional)`, `Repeat password`) | публічна |
+| POST | `/logout/` | Вихід — **лише POST**, `GET /logout/` → 405 | вхід |
+| GET | `/account/`, `/account/addresses/` | Профіль, книга адрес | вхід |
+| POST | `/account/addresses/add/`, `/account/addresses/<pk>/`, `/account/addresses/<pk>/delete/` | CRUD адрес доставки | власник |
+| POST | `/subscribe/` | Підписка на розсилку (`email`) | публічна |
+
+#### JSON API `/api/`
+
+Сесія та сама, що й у сторінок (кукі `sessionid`). На записах потрібен
+CSRF-токен: отримайте його запитом на будь-який GET із `@ensure_csrf_cookie`
+(`/api/products/` або `/api/cart/`) і передавайте в заголовку `X-CSRFToken`.
+Пагінація однакова скрізь: `?limit=` (за замовчуванням 9, максимум 50) і
+`?offset=`; у відповіді `meta: {limit, offset, count, next}`.
+
+| Метод | URL | Що робить |
+|---|---|---|
+| GET | `/api/products/` | Товари. Фільтри: `category` (slug, з усім піддеревом), `size`, `tag` (списки через кому), `price_min`, `price_max`, `q`, `sale`, `featured`, `sort` = `newest`/`price-asc`/`price-desc`/`name`/`rating`; для staff — `include_disabled=1` |
+| GET | `/api/products/<slug>/` | Товар + відгуки (погоджені; свої бачить і автор навіть без погодження) |
+| GET | `/api/categories/` | Дерево категорій із лічильниками всього піддерева |
+| GET | `/api/sizes/` | Розміри з кількістю активних товарів |
+| GET | `/api/tags/` | Активні теги |
+| GET | `/api/blog/` | Пости блогу; фільтри `q`, `tag`; staff бачить іще неопубліковані |
+| GET | `/api/blog/<slug>/` | Один пост |
+| GET/DELETE | `/api/cart/` | Поточний кошик (створює порожній); `DELETE` — очистити |
+| POST | `/api/cart/items/` | Додати: `{product: slug\|id, size?, quantity?}` → 201; залишки перевіряються до запису |
+| PATCH/DELETE | `/api/cart/items/<line_id>/` | Змінити кількість `{quantity}` / видалити позицію |
+| PATCH/POST | `/api/cart/coupon/` | `{code: "GREEN10"}`; порожній код знімає купон |
+| POST | `/api/checkout/` | Оформити: `{full_name, email, phone?, address_line, city, region, postal_code, country, note?, payment_method: card\|bank\|cod, address_id?}` → 201; потрібні вхід і непорожній кошик |
+| GET | `/api/orders/` | Мої замовлення; для staff `?all=1`, `?status=` |
+| GET/PATCH | `/api/orders/<number>/` | Деталі; `PATCH {status}` — змінює статус (staff) або скасовує ще `new` замовлення (клієнт) |
+| GET/POST | `/api/reviews/` | Список (`?product=slug\|id`); створення `{product, rating: 1–5, title?, body?}` → 201, на модерацію |
+| GET/POST | `/api/wishlist/` | Список обраного; `POST {product}` — toggle |
+| DELETE | `/api/wishlist/<product_id>/` | Прибрати з обраного → 404, якщо не було |
+| POST | `/api/auth/login/` | `{username, password}` → сесія; анонімний кошик зливається з акаунтом |
+| POST | `/api/auth/logout/` | Вихід → 204 |
+| GET | `/api/auth/me/` | Поточний користувач (401 без входу) |
+| POST | `/api/newsletter/` | `{email}` → 201 при першій підписці, 200 при повторній |
+
+Статуси помилок: `400` — валідація (`{"errors": {поле: [повідомлення]}}`),
+`401` — потрібен вхід, `403` — недостатньо прав, `404` — немає об'єкта.
+Приклад:
+
+```powershell
+$s = $null
+Invoke-WebRequest -Uri http://127.0.0.1:8000/api/auth/login/ -Method POST -SessionVariable s `
+  -ContentType application/json -Body '{"username":"user","password":"user"}' | Out-Null
+$csrf = $s.Cookies.GetCookies('http://127.0.0.1:8000')['csrftoken'].Value
+Invoke-WebRequest -Uri http://127.0.0.1:8000/api/cart/items/ -Method POST -WebSession $s `
+  -ContentType application/json -Headers @{ 'X-CSRFToken' = $csrf } `
+  -Body '{"product":"<slug>","quantity":1}'
+```
+
+#### Адмінка `/admin/`
+
+`admin`/`admin`: CRUD товарів, категорій, розмірів і тегів; погодження
+відгуків (перерахунок рейтингу); обробка замовлень — переходи статусів
+`new → confirmed → packing → shipped / delivered`, `cancelled` у будь-який
+момент до відправлення; пости блогу `BlogPost` (`is_published`,
+`published_at`, теги через кому); підписники розсилки.
 
 ### Оновлення бази
 
@@ -203,6 +304,21 @@ python -m venv .venv
 ├── sitemap.xml · robots.txt
 ├── .vercelignore               ← тримає секрети й інструменти за бортом деплою
 └── .gitignore                  ← тримає секрети й інструменти за бортом коміту
+```
+
+### Структура backend/
+
+```
+backend/
+├── config/                    ← settings (dev / prod / test), спільні URL
+├── core/                      ← реєстрація, вхід, профіль, адреси, підписки
+├── catalog/                   ← категорії-дерево, товари, розміри, теги, відгуки, обране
+├── orders/                    ← кошик, купони, замовлення; єдиний шлях до бази — services.py
+├── api/                       ← JSON API під /api/ (plain JsonResponse, без DRF) + BlogPost
+├── templates/ · static/ · media/
+├── e2e/                       ← Playwright Python: 9 сценаріїїв користувача + артефакти
+├── perf_probe.py              ← замір швидкості сторінок і кількості SQL-запитів
+└── manage.py
 ```
 
 ---
@@ -316,20 +432,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File parts\build.ps1
 
 ## Тести
 
-Playwright (`@playwright/test`), TypeScript, браузери Chromium / Firefox / WebKit:
+Три рівні покриття, усі зелі:
 
-| Спека | Що перевіряє |
+| Рівень | Команда | Що перевіряє |
+|---|---|---|
+| Django unit + API | `cd backend` · `$env:DJANGO_ENV='test'` · `.\.venv\Scripts\python.exe manage.py test core catalog orders api` | 225 тестів: моделі, сервісний шар, сторінки, JSON API — на in-memory SQLite, без мережі |
+| Playwright (Python) e2e | `cd backend` · `.\.venv\Scripts\python.exe e2e\test_user_stories.py` | 9 сценаріїїв користувача: реєстрація, вхід/вихід, покупка від каталогу до замовлення, арифметика кошика, блокування понад залишок, відгук на модерацію, обране, блог. Скриншоти при падінні — `backend/e2e/artifacts/`; адреса сервера — через `BASE_URL` |
+| Playwright (TypeScript) | з кореня репо · `npx playwright test --project=chromium` | 63 тести проти `http://127.0.0.1:8000`: доступність, SEO, перфоманс, Lighthouse, візуальні скріншоти |
+
+| TS-спека | Що перевіряє |
 |---|---|
-| `tests/accessibility.spec.ts` | Доступність: фокус, ARIA, контраст, заголовки |
-| `tests/seo.spec.ts` | Мета-теги, `sitemap.xml`, canonical, Open Graph |
-| `tests/performance.spec.ts` | TTFB, кеш, стиснення, редіректи, cookie |
-| `tests/lighthouse.spec.ts` | Метрики Lighthouse |
-| `tests/screenshots.spec.ts` | Регресійні скріншоти на різних в'юпортах |
+| `tests/accessibility.spec.ts` | alt-атрибути, accessible name у посилань і кнопок, ARIA-ролі з повного білого списку, контраст |
+| `tests/seo.spec.ts` | title, meta description, один `<h1>`, Open Graph |
+| `tests/performance.spec.ts` | TTFB, бюджети завантаження, кеш, редіректи |
+| `tests/lighthouse.spec.ts` | метрики якості сторінок |
+| `tests/screenshots.spec.ts` | регресійні скріншоти на різних в'юпортах |
 
-```bash
-npm test                                   # усе
-npx playwright test performance --project=chromium
-```
+E2E та TS-сьюти потребують піднятого сервера `runserver 127.0.0.1:8000`;
+Django-тести автономні. Візуальні базові скріншоти оновлюються ключем
+`--update-snapshots` після змін у шаблонах чи CSS.
 
 ---
 

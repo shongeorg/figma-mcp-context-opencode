@@ -6,7 +6,6 @@
 {% block main %}
       <div class="container">
         <div class="account">
-          <!-- Sidebar -->
           <nav class="account-nav" aria-labelledby="account-nav-title">
             <h1 class="account-nav__title" id="account-nav-title">My Account</h1>
             <ul>
@@ -54,14 +53,16 @@
               </li>
             </ul>
             <p class="account-nav__logout">
-              <a href="{% url 'core:logout' %}">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.4 5H6.6A2.2 2.2 0 0 0 4.4 7.2v9.6A2.2 2.2 0 0 0 6.6 19h3.8" /><path d="M15.4 8.4 19 12l-3.6 3.6" /><path d="M19 12H9.6" /></svg>
-                Logout
-              </a>
+              <form method="post" action="{% url 'core:logout' %}">
+                {% csrf_token %}
+                <button type="submit">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.4 5H6.6A2.2 2.2 0 0 0 4.4 7.2v9.6A2.2 2.2 0 0 0 6.6 19h3.8" /><path d="M15.4 8.4 19 12l-3.6 3.6" /><path d="M19 12H9.6" /></svg>
+                  Logout
+                </button>
+              </form>
             </p>
           </nav>
 
-          <!-- Panel -->
           <div class="account-panel">
             <h2>Personal Information</h2>
 

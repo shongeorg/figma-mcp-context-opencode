@@ -1,6 +1,3 @@
-/* ==========================================================================
-   GreenShop — design tokens
-   ========================================================================== */
 :root {
   --green: #46a358;
   --green-60: rgba(70, 163, 88, 0.6);
@@ -32,9 +29,6 @@
   --shadow-soft: 0 0 20px rgba(0, 0, 0, 0.06);
 }
 
-/* ==========================================================================
-   Base
-   ========================================================================== */
 *,
 *::before,
 *::after {
@@ -100,9 +94,6 @@ button {
   color: inherit;
 }
 
-/* ==========================================================================
-   Utilities
-   ========================================================================== */
 .container {
   inline-size: min(100% - var(--gutter) * 2, var(--container));
   margin-inline: auto;
@@ -168,9 +159,6 @@ search {
   margin: 0;
 }
 
-/* ==========================================================================
-   Buttons & form controls
-   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -302,7 +290,6 @@ search {
   color: var(--ink);
 }
 
-/* Native validation feedback only after interaction (guide: :user-valid) */
 .input:user-invalid,
 .select:user-invalid,
 .textarea:user-invalid {
@@ -369,17 +356,16 @@ search {
   gap: 10px;
 }
 
-/* the prefix select is only 78px wide — keep "+966" readable */
 .phone-field .select {
   padding-inline-end: 24px;
   background-position: right 6px center;
   background-size: 14px;
 }
 
-/* ==========================================================================
-   Header
-   ========================================================================== */
 .site-header {
+  position: relative;
+  z-index: 10;
+  background: var(--white);
   padding-block: 25px 0;
   border-block-end: 1px solid var(--green-50);
 }
@@ -511,7 +497,6 @@ search {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Search field revealed from the header icon */
 .header-search {
   display: none;
   padding-block: 12px;
@@ -527,9 +512,6 @@ search {
   gap: 10px;
 }
 
-/* ==========================================================================
-   Hero / main banner
-   ========================================================================== */
 .hero {
   position: relative;
   margin-block-start: 12px;
@@ -611,16 +593,96 @@ search {
   inset-inline: 0;
   display: flex;
   justify-content: center;
+  gap: 8px;
   z-index: 3;
 }
 
-.hero__dots img {
-  inline-size: 40px;
+.hero__slider {
+  position: absolute;
+  inset-block-start: -48px;
+  inset-inline-end: -11px;
+  inline-size: 518px;
+  block-size: 518px;
+  z-index: 1;
 }
 
-/* ==========================================================================
-   Shop layout: filters + product grid
-   ========================================================================== */
+.hero__slides {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.hero__slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.hero__slide-media {
+  inline-size: 380px;
+  block-size: 380px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+.hero__slide-media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.hero__slide-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.hero__slide-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.hero__slide-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.hero__slide-price .price--old {
+  color: var(--muted);
+  font-weight: 400;
+  text-decoration: line-through;
+  font-size: 12px;
+}
+
+.hero__slide-cta {
+  pointer-events: none;
+}
+
+.hero__dots .swiper-pagination-bullet {
+  inline-size: 10px;
+  block-size: 10px;
+  margin: 0 4px;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.hero__dots .swiper-pagination-bullet-active {
+  background: var(--green);
+  transform: scale(1.2);
+}
+
 .shop {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);
@@ -677,7 +739,6 @@ search {
   font-weight: 700;
 }
 
-/* Price range */
 .range {
   margin-block-start: 21px;
   padding-inline-start: 12px;
@@ -768,7 +829,6 @@ search {
   text-transform: none;
 }
 
-/* Sort bar */
 .shop-toolbar {
   display: flex;
   align-items: center;
@@ -832,7 +892,6 @@ search {
   box-shadow: none;
 }
 
-/* Product grid */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -949,7 +1008,6 @@ search {
   text-decoration-color: #cbcbcb;
 }
 
-/* Pagination */
 .pagination {
   display: flex;
   justify-content: flex-end;
@@ -983,7 +1041,6 @@ search {
   color: var(--green);
 }
 
-/* Super sale banner */
 .sale-banner {
   position: relative;
   min-block-size: 470px;
@@ -1027,9 +1084,6 @@ search {
   object-fit: contain;
 }
 
-/* ==========================================================================
-   Promo cards
-   ========================================================================== */
 .promo {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1089,9 +1143,6 @@ search {
   text-transform: none;
 }
 
-/* ==========================================================================
-   Blog
-   ========================================================================== */
 .blog {
   margin-block-start: 138px;
   text-align: center;
@@ -1177,9 +1228,6 @@ search {
   color: var(--green);
 }
 
-/* ==========================================================================
-   Footer
-   ========================================================================== */
 .site-footer {
   margin-block-start: 100px;
 }
@@ -1393,9 +1441,6 @@ search {
   line-height: 30px;
 }
 
-/* ==========================================================================
-   Breadcrumb & page intro
-   ========================================================================== */
 .breadcrumb {
   margin-block-start: 36px;
   font-size: 15px;
@@ -1414,9 +1459,6 @@ search {
   color: var(--ink);
 }
 
-/* ==========================================================================
-   Product page
-   ========================================================================== */
 .product {
   display: grid;
   grid-template-columns: 573px minmax(0, 1fr);
@@ -1653,7 +1695,6 @@ search {
   block-size: 24px;
 }
 
-/* Tabs */
 .tabs {
   margin-block-start: 94px;
 }
@@ -1709,7 +1750,6 @@ search {
   margin-block-start: 24px;
 }
 
-/* Related products */
 .related {
   margin-block-start: 76px;
 }
@@ -1789,9 +1829,6 @@ search {
   background: var(--green);
 }
 
-/* ==========================================================================
-   Cart
-   ========================================================================== */
 .cart-layout {
   display: grid;
   grid-template-columns: minmax(0, 782px) minmax(0, 332px);
@@ -1801,8 +1838,6 @@ search {
 
 .cart-table {
   inline-size: 100%;
-  /* compensate the 10px top border-spacing so the header row lines up with
-     the sidebar heading */
   margin-block-start: -10px;
   border-collapse: separate;
   border-spacing: 0 10px;
@@ -2002,7 +2037,6 @@ search {
   cursor: pointer;
 }
 
-/* revealed by the "Have a coupon code? Click here" link on checkout */
 .coupon--reveal {
   flex-wrap: wrap;
   margin-block-start: 26px;
@@ -2082,9 +2116,6 @@ search {
   color: var(--green);
 }
 
-/* ==========================================================================
-   Checkout
-   ========================================================================== */
 .checkout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 405px;
@@ -2264,7 +2295,6 @@ search {
   block-size: auto;
 }
 
-/* Order panel: totals + payments are indented (405px rows → 321px column) */
 .order-indent {
   padding-inline-start: min(84px, 21%);
 }
@@ -2277,9 +2307,6 @@ search {
   margin-block-start: 49px;
 }
 
-/* ==========================================================================
-   Account (sidebar + panel)
-   ========================================================================== */
 .account {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);
@@ -2357,6 +2384,33 @@ search {
   font-weight: 500;
 }
 
+.account-nav form {
+  display: contents;
+}
+
+.account-nav form button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  inline-size: 100%;
+  padding: 11px 18px 11px 24px;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.account-nav form button:hover {
+  color: var(--green);
+}
+
+.account-nav__logout form button {
+  color: var(--green);
+  font-weight: 500;
+}
+
 .account-panel {
   padding-block-start: 5px;
 }
@@ -2395,7 +2449,6 @@ search {
   display: grid;
   gap: 30px;
   margin-block-start: 17px;
-  /* password fields stop halfway, matching the design */
   max-inline-size: 417px;
 }
 
@@ -2472,7 +2525,8 @@ search {
   box-shadow: inset 0 0 0 3px var(--white);
 }
 
-.account-nav__logout a {
+.account-nav__logout a,
+.account-nav__logout form button {
   padding-block: 19px;
 }
 
@@ -2502,9 +2556,6 @@ search {
   gap: 30px 31px;
 }
 
-/* ==========================================================================
-   Dialogs: login / register / order confirmation
-   ========================================================================== */
 dialog {
   padding: 0;
   border: 0;
@@ -2522,7 +2573,6 @@ dialog::backdrop {
   background: rgba(61, 61, 61, 0.55);
 }
 
-/* Fallback for engines without <dialog> support. */
 .no-dialog dialog[open] {
   position: fixed;
   inset: 0;
@@ -2550,7 +2600,6 @@ dialog::backdrop {
   padding: 40px clamp(20px, 7%, 42px) 0;
 }
 
-/* auth cards without the social block keep their own bottom room */
 .dialog-card--pad {
   padding-block-end: 40px;
 }
@@ -2611,14 +2660,12 @@ dialog::backdrop {
   color: var(--ink);
 }
 
-/* the design spaces the two sign-in fields 17px apart */
 .auth-form > .input-wrap {
   margin-block-start: 5px;
 }
 
 .auth-lead {
   font-size: 14px;
-  /* Cera Pro is ~4% narrower than our fallback stack — keep the lead on one line */
   letter-spacing: -0.3px;
   margin-block-end: 4px;
 }
@@ -2665,7 +2712,6 @@ dialog::backdrop {
   padding-block-end: 40px;
 }
 
-/* the sign-in card keeps more room below the social buttons (design) */
 .dialog-card:has(.auth-links) .auth-social {
   padding-block-end: 59px;
 }
@@ -2691,7 +2737,6 @@ dialog::backdrop {
   block-size: 22px;
 }
 
-/* Order confirmation dialog */
 .thanks {
   text-align: center;
   padding-block-end: 49px;
@@ -2866,9 +2911,6 @@ dialog::backdrop {
   white-space: nowrap;
 }
 
-/* ==========================================================================
-   Responsive
-   ========================================================================== */
 @media (max-width: 1180px) {
   .shop {
     grid-template-columns: 270px minmax(0, 1fr);
@@ -3028,8 +3070,22 @@ dialog::backdrop {
     margin: 24px auto 0;
   }
 
-  .hero__media--thumb {
-    display: none;
+  .hero__slider {
+    position: static;
+    inline-size: min(320px, 80%);
+    block-size: auto;
+    aspect-ratio: 1;
+    margin: 24px auto 0;
+  }
+
+  .hero__slide-media {
+    inline-size: 240px;
+    block-size: 240px;
+  }
+
+  .hero__slide-info {
+    padding: 8px 10px;
+    gap: 8px;
   }
 
   .hero__dots {
@@ -3162,7 +3218,6 @@ dialog::backdrop {
     margin-block-start: 48px;
   }
 
-  /* Stacked cart rows */
   .cart-table,
   .cart-table tbody,
   .cart-table tr,

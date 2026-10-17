@@ -1,5 +1,3 @@
-"""Forms for registration and the address book."""
-
 from __future__ import annotations
 
 from django import forms
@@ -10,8 +8,6 @@ from .models import Address, User
 
 
 class RegisterForm(UserCreationForm):
-    """Sign-up with the fields the shop actually asks for."""
-
     first_name = forms.CharField(max_length=150, widget=forms.TextInput(
         attrs={"class": "input", "placeholder": "First name", "autocomplete": "given-name"},
     ))
@@ -21,7 +17,8 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(
         attrs={"class": "input", "placeholder": "Email", "autocomplete": "email"},
     ))
-    phone = forms.CharField(max_length=32, required=False, widget=forms.TextInput(
+    phone = forms.CharField(label="Phone (optional)", max_length=32, required=False,
+                            widget=forms.TextInput(
         attrs={"class": "input", "placeholder": "Phone (optional)", "autocomplete": "tel"},
     ))
 
@@ -37,6 +34,7 @@ class RegisterForm(UserCreationForm):
         self.fields["password1"].widget.attrs.update({
             "class": "input", "placeholder": "Password", "autocomplete": "new-password",
         })
+        self.fields["password2"].label = "Repeat password"
         self.fields["password2"].widget.attrs.update({
             "class": "input", "placeholder": "Repeat password",
             "autocomplete": "new-password",
@@ -59,8 +57,6 @@ class RegisterForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    """Django's login form, dressed to match the mockup's inputs."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["username"].label = ""
@@ -81,8 +77,6 @@ class LoginForm(AuthenticationForm):
 
 
 class AddressForm(forms.ModelForm):
-    """Used by both the address book and the checkout page."""
-
     class Meta:
         model = Address
         fields = (
@@ -109,7 +103,6 @@ class AddressForm(forms.ModelForm):
         self.fields["postal_code"].required = False
         self.fields["phone"].required = False
         self.fields["is_default"].label = "Use as my default address"
-        # Labels read better as placeholders above.
         for name, field in self.fields.items():
             if name != "is_default":
                 field.label = ""

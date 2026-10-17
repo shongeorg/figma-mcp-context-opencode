@@ -1,5 +1,3 @@
-"""Storefront URLs for accounts, auth and the home page."""
-
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 

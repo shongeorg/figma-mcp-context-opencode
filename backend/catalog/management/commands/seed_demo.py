@@ -1,20 +1,3 @@
-"""Create the demo catalogue that matches the GreenShop mockup.
-
-Run it against an empty database::
-
-    python manage.py seed_demo
-
-Pass ``--wipe`` to clear everything first, or ``--no-users`` to leave the
-accounts alone.
-
-The numbers below are the ones printed in the design's sidebar, so the
-counts a visitor sees in the shop are real rather than hard-coded.
-
-Everything is written with ``bulk_create``: a couple of round trips in total
-instead of one per row, which matters because the database lives in another
-region.
-"""
-
 from __future__ import annotations
 
 import shutil
@@ -46,8 +29,6 @@ User = get_user_model()
 STATIC_IMAGES = Path(settings.BASE_DIR) / "static" / "images"
 MEDIA_PRODUCTS = Path(settings.MEDIA_ROOT) / "products"
 
-# --------------------------------------------------------- category tree ---
-# name, target product count, [(subcategory, count), ...]
 
 CATEGORY_TREE = [
     ("House Plants", 33, [("Foliage", 14), ("Flowering", 11), ("Palms", 8)]),
@@ -59,9 +40,6 @@ CATEGORY_TREE = [
     ("Terrariums", 19, [("Closed Terrariums", 11), ("Open Terrariums", 8)]),
 ]
 
-# ------------------------------------------------------------- the nine ----
-# Exactly the plants shown on the shop page of the mockup, with their
-# prices. African Violet is the one on sale: $199.00, was $229.00, 13% OFF.
 
 HERO_PRODUCTS = [
     {
@@ -192,9 +170,6 @@ HERO_PRODUCTS = [
     },
 ]
 
-# ------------------------------------------------------- filler names ------
-# Enough distinct names to reach the mockup's sidebar counts without
-# repeating any product.
 
 FILLER_NAMES = {
     "Foliage": [
@@ -370,7 +345,6 @@ class Command(BaseCommand):
             help="Skip creating the admin/client accounts.",
         )
 
-    # ------------------------------------------------------------------ --
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -397,7 +371,6 @@ class Command(BaseCommand):
             "Admin: admin / admin    Client: user / user"
         ))
 
-    # ------------------------------------------------------------- reset --
 
     def wipe(self):
         self.stdout.write("Wiping catalogue and order data…")
@@ -415,7 +388,6 @@ class Command(BaseCommand):
         shutil.rmtree(MEDIA_PRODUCTS, ignore_errors=True)
         self.stdout.write(self.style.WARNING("  wiped."))
 
-    # --------------------------------------------------------- primitives --
 
     def seed_sizes(self) -> dict:
         objects = [
@@ -436,7 +408,6 @@ class Command(BaseCommand):
         return {t.name: t for t in Tag.objects.all()}
 
     def seed_categories(self) -> dict:
-        """Roots and subcategories, keyed by name."""
         to_create: list[Category] = []
         parent_ids: dict[str, int | None] = {}
 
@@ -452,11 +423,8 @@ class Command(BaseCommand):
                 ))
 
         Category.objects.bulk_create(to_create, ignore_conflicts=True)
-        # `ignore_conflicts` skips rows that already exist, so read the
-        # canonical set back rather than trusting the local instances.
         existing = {c.name: c for c in Category.objects.all()}
 
-        # Now wire the parent links — a second pass, once every pk is known.
         updates = []
         for name, _total, children in CATEGORY_TREE:
             parent = existing[name]
@@ -474,11 +442,9 @@ class Command(BaseCommand):
                           f"{sum(len(c[2]) for c in CATEGORY_TREE)} subcategories)")
         return existing
 
-    # ---------------------------------------------------------- products --
 
     def seed_products(self):
         MEDIA_PRODUCTS.mkdir(parents=True, exist_ok=True)
-        # Copy the nine photographs once; the generated products reuse them.
         photo_paths: dict[str, str] = {}
         for spec in HERO_PRODUCTS:
             source = STATIC_IMAGES / spec["image"]
@@ -513,7 +479,6 @@ class Command(BaseCommand):
                 "is_active": True, "stock": stock, "photo": photo,
             })
 
-        # The nine hero plants first, so they hold ordering 0..8.
         for index, spec in enumerate(HERO_PRODUCTS):
             next_row(
                 name=spec["name"],
@@ -525,7 +490,6 @@ class Command(BaseCommand):
                 stock=25, photo=photo_paths.get(spec["image"]),
             )
 
-        # Then the rest, distributed to hit the sidebar counts exactly.
         hero_counts: dict[str, int] = {}
         for spec in HERO_PRODUCTS:
             hero_counts[spec["category"]] = hero_counts.get(spec["category"], 0) + 1
@@ -547,7 +511,6 @@ class Command(BaseCommand):
                     product_name = base if base not in used_names else f"{base} {repeat}"
 
                     price = base_price + Decimal(i % 9) * Decimal("3.50")
-                    # Every fourth filler goes on sale, like the mockup's 13% OFF.
                     old_price = f"{price * Decimal('1.15'):.2f}" if i % 4 == 3 else None
 
                     photo_keys = list(photo_paths)
@@ -580,12 +543,9 @@ class Command(BaseCommand):
                 ordering=r["ordering"], is_featured=r["is_featured"],
                 is_new=r["is_new"], is_active=True, stock=r["stock"],
             ) for r in rows],
-            # Postgres assigns the primary keys, so the follow-up inserts can
-            # reference them without a lookup per row.
             batch_size=100,
         )
 
-        # -- product ↔ tag links ------------------------------------------
         through = Product.tags.through
         through_rows = []
         tag_by_name = self.tag_by_name
@@ -596,7 +556,6 @@ class Command(BaseCommand):
                     through_rows.append(through(product_id=product.pk, tag_id=tag.pk))
         through.objects.bulk_create(through_rows, ignore_conflicts=True, batch_size=500)
 
-        # -- sizes ---------------------------------------------------------
         size_rows = []
         size_order = [n for n, _ in SIZES]
         for row, product in zip(rows, products):
@@ -612,7 +571,6 @@ class Command(BaseCommand):
                 ))
         ProductSize.objects.bulk_create(size_rows, ignore_conflicts=True, batch_size=500)
 
-        # -- images --------------------------------------------------------
         image_rows = []
         for row, product in zip(rows, products):
             if not row["photo"]:
@@ -626,7 +584,6 @@ class Command(BaseCommand):
         self.stdout.write(f"  {len(products)} products, "
                           f"{len(size_rows)} size rows, {len(image_rows)} images")
 
-    # -------------------------------------------------------------- users --
 
     def seed_users(self):
         admin, created = User.objects.get_or_create(
@@ -678,7 +635,6 @@ class Command(BaseCommand):
         self.seed_sample_order(client)
 
     def seed_sample_order(self, client):
-        """One delivered order and one waiting in the admin queue."""
         if Order.objects.exists():
             return
 
@@ -727,10 +683,8 @@ class Command(BaseCommand):
         OrderItem.objects.bulk_create(order_items)
         self.stdout.write("  2 sample orders")
 
-    # ------------------------------------------------------------ reviews --
 
     def seed_reviews(self):
-        """A handful of approved reviews so the shop shows real ratings."""
         if Review.objects.exists():
             return
 
@@ -783,15 +737,12 @@ class Command(BaseCommand):
             ))
         Review.objects.bulk_create(reviews)
 
-        # `created_at` is auto_now_add, so backdate with a follow-up update
-        # to make the list look naturally accumulated over time.
         now = timezone.now()
         for index, review in enumerate(reviews):
             Review.objects.filter(pk=review.pk).update(
                 created_at=now - timezone.timedelta(days=index * 4 + 2)
             )
 
-        # One pending review, so the admin queue is not empty on first login.
         client = User.objects.filter(username="user").first()
         pending_product = Product.objects.filter(name="Beach Spider Lily").first()
         if client is not None and pending_product is not None:
@@ -805,7 +756,6 @@ class Command(BaseCommand):
                 },
             )
 
-        # Rescore every product from whatever reviews now exist.
         for product in Product.objects.all():
             services.refresh_product_rating(product.pk)
 

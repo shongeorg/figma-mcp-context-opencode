@@ -11,7 +11,10 @@
             <a href="{% url 'orders:list' %}" aria-current="page">My Orders</a>
             <a href="{% url 'core:address-list' %}">Address Book</a>
             <a href="{% url 'catalog:wishlist' %}">Wishlist ({{ wishlist_count }})</a>
-            <a href="{% url 'core:logout' %}">Logout</a>
+            <form method="post" action="{% url 'core:logout' %}">
+              {% csrf_token %}
+              <button type="submit">Logout</button>
+            </form>
           </nav>
 
           <div class="account-main">

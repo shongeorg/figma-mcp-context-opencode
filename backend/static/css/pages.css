@@ -1,13 +1,4 @@
-/* Glue styles for the pages Django adds on top of the static build.
- *
- * Everything here is additive and narrowly scoped: the verified layout,
- * components and the mobile app layer all come from style.css and the five
- * mobile-*.css files. This file only covers markup that has no counterpart
- * in the static site — flash messages, empty states, the standalone auth
- * pages and the address form.
- */
 
-/* --------------------------------------------------------- flash messages */
 
 .site-messages:empty {
   display: none;
@@ -45,8 +36,6 @@
   color: #2c5578;
 }
 
-/* ------------------------------------------------------------- empty state */
-
 .empty-state {
   margin: 24px 0;
   padding: 24px;
@@ -61,8 +50,6 @@
   color: var(--green);
 }
 
-/* ------------------------------------------------------------- auth pages */
-
 .auth-page {
   display: grid;
   place-items: center;
@@ -74,7 +61,6 @@
   inline-size: min(100%, 460px);
 }
 
-/* The card is the page here, so it never gets the modal's close button. */
 .auth-page .dialog-close {
   display: none;
 }
@@ -109,8 +95,6 @@
 }
 
 @media (max-width: 640px) {
-  /* #login-dialog / #register-dialog win on padding and size; this only
-     needs to stop forcing the desktop grid. */
   #login-dialog.auth-page,
   #register-dialog.auth-page {
     display: block;
@@ -123,8 +107,6 @@
     inline-size: 100%;
   }
 }
-
-/* ----------------------------------------------------------- shop heading */
 
 .shop-title {
   margin: 0 0 4px;
@@ -139,7 +121,11 @@
   font-size: 14px;
 }
 
-/* ----------------------------------------------------------- order detail */
+.home-more {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0 0;
+}
 
 .order-meta {
   margin: 0 0 24px;
@@ -153,8 +139,6 @@
   gap: 12px;
   margin: 24px 0 0;
 }
-
-/* ---------------------------------------------------------- address form */
 
 .address-form__field {
   margin: 0 0 16px;

@@ -1,13 +1,9 @@
-/* GreenShop — small progressive enhancements.
-   Everything works without JS except: mobile menu, gallery switching,
-   quantity steppers, tabs and dialogs. */
 (() => {
   "use strict";
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  /* ---------------------------------------------------------------- nav */
   const navToggle = $(".nav-toggle");
   const nav = $("#primary-nav");
   if (navToggle && nav) {
@@ -18,7 +14,6 @@
     });
   }
 
-  /* ------------------------------------------------------------- search */
   const searchToggle = $("[data-search-toggle]");
   const searchBar = $("#header-search");
   if (searchToggle && searchBar) {
@@ -30,20 +25,16 @@
     });
   }
 
-  /* ------------------------------------------------------------ dialogs */
   const supported = typeof HTMLDialogElement !== "undefined";
 
   const openDialog = (dialog) => {
     if (!dialog) return;
-    // showModal() throws InvalidStateError when the dialog is already up.
     if (dialog.open) {
       dialog.focus({ preventScroll: true });
       return;
     }
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
-    // Move focus to the dialog itself so the close button is not
-    // ringed the moment the dialog appears (it still rings on Tab).
     if (dialog.hasAttribute("tabindex")) dialog.focus({ preventScroll: true });
   };
 
@@ -55,7 +46,6 @@
 
   const swapDialog = (dialog) => {
     if (!dialog) return;
-    // Only one modal at a time: drop whatever else is open first.
     $$("dialog[open]").forEach((open) => {
       if (open !== dialog) closeDialog(open);
     });
@@ -63,9 +53,6 @@
   };
 
   $$("[data-dialog]").forEach((trigger) => {
-    // A <form data-dialog> must open on submit only — wiring it to "click"
-    // would fire for every bubbled click inside the form (typing, coupon
-    // reveal, payment options ...) and pop the dialog at random.
     if (trigger.tagName === "FORM") return;
     trigger.addEventListener("click", (event) => {
       const dialog = document.getElementById(trigger.dataset.dialog);
@@ -79,7 +66,6 @@
     $$("[data-dialog-close]", dialog).forEach((btn) =>
       btn.addEventListener("click", () => closeDialog(dialog))
     );
-    // light-dismiss: click on the backdrop (the <dialog> element itself)
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) closeDialog(dialog);
     });
@@ -90,7 +76,6 @@
     document.documentElement.classList.add("no-dialog");
   }
 
-  /* --------------------------------------------------- password reveal */
   $$("[data-toggle-password]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const input = document.getElementById(btn.dataset.togglePassword);
@@ -111,7 +96,6 @@
     });
   });
 
-  /* ----------------------------------------------------------- steppers */
   $$("[data-stepper]").forEach((stepper) => {
     const field = $("input, output", stepper);
     const read = () => parseInt(field.value ?? field.textContent, 10) || 0;
@@ -129,7 +113,6 @@
     });
   });
 
-  /* ----------------------------------------------------------- gallery */
   const gallery = $("[data-gallery]");
   if (gallery) {
     const main = $("[data-gallery-main]", gallery);
@@ -148,7 +131,6 @@
     });
   }
 
-  /* ------------------------------------------------------ tabs & toggles */
   $$("[data-tabs]").forEach((group) => {
     const buttons = $$('[role="tab"]', group);
     buttons.forEach((btn, index) => {
@@ -194,7 +176,6 @@
     });
   });
 
-  /* ----------------------------------------------------------- cart row */
   $$("[data-remove-item]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const row = btn.closest("tr, li");
@@ -205,7 +186,6 @@
     });
   });
 
-  /* -------------------------------------------------------- price range */
   $$("[data-range]").forEach((wrap) => {
     const inputs = $$('input[type="range"]', wrap);
     if (inputs.length !== 2) return;
@@ -239,7 +219,6 @@
     paint();
   });
 
-  /* -------------------------------------------------------------- forms */
   $$("form[data-demo]").forEach((form) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -257,11 +236,6 @@
     });
   });
 
-  /* ------------------------------------------- demo anchor stubs
-     The mock has no backend, so these in-page anchors would otherwise
-     jump nowhere. Each one gets a real, visible reaction instead. */
-
-  // "Forgot Password?" -> the reset dialog shipped in the master template.
   const forgotDialog = $("#forgot-dialog");
   $$('a[href="#forgot"]').forEach((link) => {
     link.addEventListener("click", (event) => {
@@ -272,7 +246,6 @@
     });
   });
 
-  // "Login with Google / Facebook" -> an honest inline note.
   $$('a[href="#google"], a[href="#facebook"]').forEach((link) => {
     link.addEventListener("click", (event) => {
       event.preventDefault();
@@ -293,7 +266,6 @@
     });
   });
 
-  // "Have a coupon code? Click here" -> reveal the coupon field.
   if (!document.getElementById("coupon-code")) {
     $$('a[href="#coupon-code"]').forEach((link) => {
       const panel = document.createElement("div");
@@ -335,19 +307,12 @@
     });
   }
 
-  /* -------------------------------------------- mobile app chrome -----
-     Everything below only matters below 640px, where the app shell
-     (bottom tab bar, floating action button, screen headers) replaces the
-     desktop header. It is harmless on desktop. */
-
-  // Mark the active destination in the bottom tab bar.
   const here = location.pathname.split("/").pop() || "index.html";
   $$(".appbar__link").forEach((link) => {
     const target = (link.getAttribute("href") || "").split(/[?#]/)[0];
     if (target && target === here) link.setAttribute("aria-current", "page");
   });
 
-  // The filter square in the mobile search row reveals the filter panel.
   const filterToggle = $("[data-filter-toggle]");
   const filterPanel = document.getElementById("filters");
   if (filterToggle && filterPanel) {
@@ -358,7 +323,6 @@
     });
   }
 
-  // Mobile shop tabs: mirror the ?sort= query onto the tab strip.
   const sort = new URLSearchParams(location.search).get("sort");
   const activeTab = sort === "new" ? "new" : sort === "sale" ? "sale" : "all";
   $$(".m-tabs__item").forEach((tab) => {
@@ -367,8 +331,6 @@
     tab.setAttribute("aria-current", "page");
   });
 
-  // The wishlist tab has no page in this build — say so instead of jumping
-  // to a dead anchor.
   const appbarNote = $("[data-appbar-note]");
   let noteTimer;
   const say = (message) => {
@@ -387,7 +349,6 @@
     });
   });
 
-  // Wishlist heart on the mobile product screen.
   $$("[data-wishlist-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const on = btn.getAttribute("aria-pressed") === "true";
@@ -398,6 +359,21 @@
     });
   });
 
-  /* Keep the sticky "Login" button pointing at the right dialog target. */
+  const heroSlider = document.querySelector("[data-hero-slider]");
+  if (heroSlider && typeof Swiper !== "undefined") {
+    const autoplayDelay = 5000;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    new Swiper(heroSlider, {
+      effect: "fade",
+      fadeEffect: { crossFade: true },
+      speed: 600,
+      loop: true,
+      autoplay: reducedMotion ? false : { delay: autoplayDelay, disableOnInteraction: false },
+      keyboard: { enabled: true },
+      pagination: { el: ".swiper-pagination", clickable: true },
+      a11y: { enabled: true },
+    });
+  }
+
   document.documentElement.classList.add("js");
 })();

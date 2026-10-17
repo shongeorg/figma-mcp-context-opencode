@@ -5,7 +5,6 @@
 
 {% block main %}
       <div class="container">
-        <!-- Mobile-only screen header -->
         <div class="m-topbar">
           <a class="m-topbar__btn" href="{% url 'orders:cart' %}" aria-label="Back to cart">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -29,7 +28,6 @@
           novalidate
         >
           {% csrf_token %}
-          <!-- Billing address -->
           <div class="billing">
             <h1 class="block-title">Billing Address</h1>
 
@@ -113,7 +111,6 @@
             </div>
           </div>
 
-          <!-- Your order -->
           <aside class="order-panel" aria-labelledby="order-title">
             <h2 class="block-title" id="order-title">Your Order</h2>
 

@@ -1,5 +1,3 @@
-"""Checkout form — delivery details plus the payment method on offer."""
-
 from __future__ import annotations
 
 from django import forms
@@ -54,7 +52,6 @@ class CheckoutForm(forms.Form):
 
     def clean_payment_method(self):
         value = self.cleaned_data.get("payment_method")
-        # Nothing is charged here; this only records what the customer picked.
         if value not in dict(self.PAYMENT_CHOICES):
             raise forms.ValidationError("Choose a payment method.")
         return value

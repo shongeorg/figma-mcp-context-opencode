@@ -1,15 +1,10 @@
-"""Basket and checkout pages, plus the order history.
-
-No payment step: submitting the checkout form creates the order and hands
-it to the admin queue.
-"""
-
 from __future__ import annotations
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from catalog.models import Product, ProductSize
@@ -20,25 +15,30 @@ from .models import Order
 
 
 def _redirect_back(request, fallback="orders:cart"):
-    next_url = request.POST.get("next") or request.META.get("HTTP_REFERER")
-    if next_url and next_url.startswith("/"):
-        return redirect(next_url)
+    candidate = request.POST.get("next") or request.META.get("HTTP_REFERER")
+    if candidate and url_has_allowed_host_and_scheme(
+        candidate,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(candidate)
     return redirect(fallback)
 
-
-# ------------------------------------------------------------------ cart --
 
 def cart(request):
     cart_obj = services.get_cart(request)
     lines = list(cart_obj.items) if cart_obj else []
+    subtotal = cart_obj.subtotal if cart_obj else 0
+    discount = cart_obj.discount if cart_obj else 0
+    shipping = services.shipping_cost(subtotal - discount) if cart_obj else 0
     context = {
         "nav_active": "shop",
         "cart": cart_obj,
         "lines": lines,
-        "subtotal": cart_obj.subtotal if cart_obj else 0,
-        "discount": cart_obj.discount if cart_obj else 0,
-        "shipping": services.shipping_cost(cart_obj.subtotal) if cart_obj else 0,
-        "total": cart_obj.total if cart_obj else 0,
+        "subtotal": subtotal,
+        "discount": discount,
+        "shipping": shipping,
+        "total": max(subtotal - discount + shipping, 0) if cart_obj else 0,
         "free_shipping_over": services.FREE_SHIPPING_OVER,
         "page_title": "Shopping Cart — GreenShop",
     }
@@ -100,8 +100,6 @@ def apply_coupon(request):
         messages.error(request, f"“{code or '—'}” is not a valid coupon code.")
     return redirect("orders:cart")
 
-
-# -------------------------------------------------------------- checkout --
 
 def checkout(request):
     cart_obj = services.get_cart(request)
@@ -175,8 +173,6 @@ def checkout(request):
         "page_title": "Checkout — GreenShop",
     })
 
-
-# ---------------------------------------------------------------- orders --
 
 @login_required
 def order_list(request):

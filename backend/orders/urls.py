@@ -1,5 +1,3 @@
-"""Basket, checkout and order history URLs."""
-
 from django.urls import path
 
 from . import views

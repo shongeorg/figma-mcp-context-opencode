@@ -1,15 +1,8 @@
 import { Page } from '@playwright/test';
 
-/**
- * Performance Helpers для тестування веб-віталів та метрик
- */
 export class PerfHelpers {
   constructor(private page: Page) {}
 
-  /**
-   * Отримує Time To First Byte (TTFB) — час до першого байту
-   * @returns TTFB в мілісекундах
-   */
   async getTTFB(): Promise<number> {
     return await this.page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
@@ -17,11 +10,6 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Отримує заголовки кешування для вказаного URL
-   * @param url — URL для перевірки
-   * @returns Об'єкт з заголовками cache-control, etag, last-modified, vary
-   */
   async getCacheHeaders(url: string): Promise<Record<string, string>> {
     const response = await this.page.request.fetch(url, { method: 'HEAD' });
     return {
@@ -32,10 +20,6 @@ export class PerfHelpers {
     };
   }
 
-  /**
-   * Отримує інформацію про з'єднання (протокол, TLS версія)
-   * @returns Об'єкт з protocol та tls
-   */
   async getConnectionInfo(): Promise<{ protocol: string; tls: string }> {
     return await this.page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
@@ -46,13 +30,9 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Перевіряє чи працює bfcache (Back-Forward Cache)
-   * @returns true якщо сторінка завантажилася з bfcache
-   */
   async checkBFCache(): Promise<boolean> {
-    await this.page.goto('/target-page');
-    await this.page.goto('/other-page');
+    await this.page.goto('/shop/');
+    await this.page.goto('/cart/');
     await this.page.goBack();
     return await this.page.evaluate(() => {
       return new Promise((resolve) => {
@@ -63,27 +43,18 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Отримує розмір cookies для вказаного URL
-   * @param url — URL для перевірки
-   * @returns Розмір cookies в байтах
-   */
   async getCookieSize(url: string): Promise<number> {
     const response = await this.page.request.fetch(url);
     const cookie = response.headers()['cookie'] || '';
     return cookie.length;
   }
 
-  /**
-   * Отримує Core Web Vitals метрики
-   * @returns Об'єкт з FCP, LCP, CLS, TTFB
-   */
   async getCoreWebVitals(): Promise<Record<string, number>> {
     return await this.page.evaluate(() => {
       return new Promise<Record<string, number>>((resolve) => {
         const result: Record<string, number> = {};
         let observer: PerformanceObserver | null = null;
-        
+
         const timeout = setTimeout(() => {
           if (observer) observer.disconnect();
           resolve(result);
@@ -107,11 +78,10 @@ export class PerfHelpers {
 
           observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'layout-shift'] });
 
-          // Чекаємо завантаження сторінки
           setTimeout(() => {
             const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
             result.ttfb = nav.responseStart;
-            
+
             if (observer) observer.disconnect();
             clearTimeout(timeout);
             resolve(result);
@@ -124,10 +94,6 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Перевіряє чи є розширення стиснення
-   * @returns Об'єкт з encodedBodySize та decodedBodySize
-   */
   async getCompressionRatio(): Promise<{ encoded: number; decoded: number; ratio: number }> {
     return await this.page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
@@ -141,10 +107,6 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Перевіряє статус Service Worker
-   * @returns 'activated', 'installing', 'activating', 'unsupported', або 'none'
-   */
   async getServiceWorkerStatus(): Promise<string> {
     return await this.page.evaluate(async () => {
       if (!('serviceWorker' in navigator)) return 'unsupported';
@@ -153,10 +115,6 @@ export class PerfHelpers {
     });
   }
 
-  /**
-   * Отримує ланцюжок редіректів
-   * @returns Масив URL в ланцюжку редіректів
-   */
   async getRedirectChain(): Promise<string[]> {
     const responses: string[] = [];
     this.page.on('response', r => responses.push(r.url()));
@@ -164,10 +122,6 @@ export class PerfHelpers {
     return responses;
   }
 
-  /**
-   * Перевіряє наявність resource hints (dns-prefetch, preconnect)
-   * @returns Масив об'єктів з rel та href
-   */
   async getResourceHints(): Promise<Array<{ rel: string; href: string | null }>> {
     return await this.page.evaluate(() => {
       return Array.from(document.querySelectorAll('link[rel="dns-prefetch"], link[rel="preconnect"]'))

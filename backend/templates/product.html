@@ -6,7 +6,6 @@
 
 {% block main %}
       <div class="container">
-        <!-- Mobile-only screen header -->
         <div class="m-topbar m-topbar--media">
           <a class="m-topbar__btn" href="{% url 'catalog:shop' %}" aria-label="Back to shop">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -33,7 +32,6 @@
         </nav>
 
         <div class="product">
-          <!-- Gallery -->
           {% if product.image_url %}
           <div class="gallery" data-gallery>
             <div
@@ -81,11 +79,9 @@
           </div>
           {% endif %}
 
-          <!-- Details -->
           <div class="product-info">
             <h1 class="product-info__title">{{ product.name }}</h1>
 
-            <!-- Mobile-only score chip (Figma mobile frame) -->
             <p class="score-chip">
               <span class="score-chip__star" aria-hidden="true">&#9733;</span>
               <strong>{{ product.rating|floatformat:1 }}</strong> <span class="score-chip__count">({{ product.reviews_count }})</span>
@@ -181,7 +177,6 @@
           </div>
         </div>
 
-        <!-- Tabs -->
         <section class="tabs" data-tabs aria-label="Product information">
           <div class="tabs__list" role="tablist">
             <button
@@ -310,7 +305,6 @@
           </div>
         </section>
 
-        <!-- Related -->
         {% if related %}
         <section class="related" aria-labelledby="related-title">
           <h2 class="related__title" id="related-title">Related products</h2>

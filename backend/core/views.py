@@ -1,5 +1,3 @@
-"""Storefront pages owned by `core`: home, auth, account and addresses."""
-
 from __future__ import annotations
 
 from django.contrib import messages
@@ -11,23 +9,21 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
 
 from catalog.models import Category, Product, Tag
+from catalog.services import category_row_tree, sizes_cached, sidebar_counts
 from orders.models import Order
-from orders.services import attach_cart_to_user, get_cart
+from orders.services import attach_cart_to_user, get_cart, prime_cart
 
 from .forms import AddressForm, RegisterForm
 from .models import Address, Subscriber, User
 
 
 def home(request):
-    """The landing page: hero, categories, the grid, services and the blog."""
     featured = (
         Product.objects.active()
         .featured()
         .select_related("category")
         .prefetch_related("images")
     )
-    # The mockup shows nine tiles; fall back to the newest plants if an
-    # admin has turned every featured flag off.
     products = list(featured)[:9]
     if len(products) < 9:
         extras = (
@@ -38,24 +34,26 @@ def home(request):
         )[: 9 - len(products)]
         products += list(extras)
 
-    categories = (
-        Category.objects.filter(is_active=True, parent__isnull=True)
-        .order_by("ordering")
-    )
+    category_rows = category_row_tree()
+
+    size_counts = sidebar_counts()["sizes"]
+    size_rows = [
+        {"size": size, "count": size_counts.get(size.pk, 0)}
+        for size in sizes_cached()
+    ]
 
     context = {
         "nav_active": "home",
         "page_title": "GreenShop — plants for a better planet",
         "hero_products": products[:3],
         "products": products,
-        "categories": categories,
+        "category_rows": category_rows,
+        "size_rows": size_rows,
         "tags": Tag.objects.filter(is_active=True),
         "sale_products": Product.objects.active().on_sale().order_by("ordering")[:3],
     }
     return render(request, "home.html", context)
 
-
-# ------------------------------------------------------------------ auth --
 
 @require_http_methods(["GET", "POST"])
 def register(request):
@@ -67,10 +65,9 @@ def register(request):
         if form.is_valid():
             with transaction.atomic():
                 user: User = form.save()
-                # Adopt any basket built before signing up.
                 anon_cart = get_cart(request)
                 if anon_cart is not None:
-                    attach_cart_to_user(anon_cart, user)
+                    prime_cart(request, attach_cart_to_user(anon_cart, user))
             login(request, user)
             messages.success(request, f"Welcome, {user.first_name or user.username}!")
             next_url = request.GET.get("next") or request.POST.get("next")
@@ -93,13 +90,12 @@ def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.get_user()
-        # The anonymous basket survives the sign-in.
         if request.session.session_key:
             from orders.models import Cart
 
             anon = Cart.objects.filter(session_key=request.session.session_key).first()
             if anon is not None:
-                attach_cart_to_user(anon, user)
+                prime_cart(request, attach_cart_to_user(anon, user))
         login(request, user)
         messages.success(request, f"Signed in as {user}.")
         next_url = request.GET.get("next") or request.POST.get("next")
@@ -111,8 +107,6 @@ def login_view(request):
         "page_title": "Login — GreenShop",
     })
 
-
-# --------------------------------------------------------------- account --
 
 @login_required
 def account(request):
@@ -175,8 +169,6 @@ def address_delete(request, pk):
     messages.info(request, "Address removed.")
     return redirect("core:address-list")
 
-
-# ------------------------------------------------------------ newsletter --
 
 @require_POST
 def subscribe(request):

@@ -1,5 +1,3 @@
-"""Accounts, addresses and site-wide base models."""
-
 from __future__ import annotations
 
 from django.conf import settings
@@ -10,8 +8,6 @@ from django.urls import reverse
 
 
 class TimeStampedModel(models.Model):
-    """``created_at`` / ``updated_at`` on everything that needs an audit trail."""
-
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -20,12 +16,6 @@ class TimeStampedModel(models.Model):
 
 
 class User(AbstractUser):
-    """The only user table — used for both the storefront and ``/admin/``.
-
-    ``role`` is the source of truth; ``is_staff`` is kept in sync on save so
-    that Django's own admin guards keep working unchanged.
-    """
-
     class Role(models.TextChoices):
         ADMIN = "admin", "Admin"
         CLIENT = "client", "Client"
@@ -58,7 +48,6 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("core:account")
 
-    # -- convenience predicates used by the views -------------------------
 
     @property
     def is_admin_role(self) -> bool:
@@ -66,8 +55,6 @@ class User(AbstractUser):
 
 
 class Address(TimeStampedModel):
-    """A saved delivery address. Checkout can also place an order without one."""
-
     class Label(models.TextChoices):
         HOME = "home", "Home"
         OFFICE = "office", "Office"
@@ -111,7 +98,6 @@ class Address(TimeStampedModel):
         return ", ".join(p for p in parts if p)
 
     def save(self, *args, **kwargs):
-        # Only one default address per user.
         if self.is_default:
             (
                 Address.objects.filter(user=self.user)
@@ -122,8 +108,6 @@ class Address(TimeStampedModel):
 
 
 class Subscriber(TimeStampedModel):
-    """Footer newsletter box."""
-
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
 

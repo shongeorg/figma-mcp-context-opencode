@@ -1,11 +1,3 @@
-"""Cart and orders.
-
-There is deliberately **no payment integration**: a visitor submits an order,
-it lands in the admin as a request, and a human confirms, ships or cancels it.
-``Order.payment_method`` only records what the mockup *offers*, it never
-charges a card.
-"""
-
 from __future__ import annotations
 
 import secrets
@@ -20,8 +12,6 @@ from django.utils import timezone
 from core.models import TimeStampedModel
 
 
-# ---------------------------------------------------------------- managers --
-
 class OrderQuerySet(models.QuerySet):
     def pending(self):
         return self.filter(status=Order.Status.NEW)
@@ -32,15 +22,7 @@ class OrderQuerySet(models.QuerySet):
         return self.none()
 
 
-# ------------------------------------------------------------------ models --
-
 class Cart(TimeStampedModel):
-    """A basket, either tied to a signed-in user or to an anonymous session.
-
-    Exactly one of the two keys is set. Anonymous carts are collected once
-    they are older than ``settings.CART_SESSION_DAYS``.
-    """
-
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -73,14 +55,25 @@ class Cart(TimeStampedModel):
     def new_session_key(cls) -> str:
         return secrets.token_urlsafe(32)[:64]
 
-    # -- line maths --------------------------------------------------------
 
     @property
-    def items(self):
-        return self.lines.select_related("product", "size").filter(is_active=True)
+    def items(self) -> list:
+        if not hasattr(self, "_items"):
+            self._items = list(
+                self.lines.select_related("product", "size__size")
+                .prefetch_related("product__images")
+                .filter(is_active=True)
+            )
+        return self._items
+
+    def invalidate_items(self) -> None:
+        self.__dict__.pop("_items", None)
+        self.__dict__.pop("badge_count", None)
 
     @property
     def item_count(self) -> int:
+        if hasattr(self, "badge_count"):
+            return self.badge_count or 0
         return sum(line.quantity for line in self.items)
 
     @property
@@ -106,11 +99,10 @@ class Cart(TimeStampedModel):
         self.coupon_code = ""
         self.coupon_discount = Decimal("0.00")
         self.save(update_fields=["coupon_code", "coupon_discount", "updated_at"])
+        self.invalidate_items()
 
 
 class CartItem(TimeStampedModel):
-    """One line in the basket: a product, optionally in a specific size."""
-
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="lines")
     product = models.ForeignKey(
         "catalog.Product", on_delete=models.CASCADE, related_name="cart_lines"
@@ -166,10 +158,8 @@ class CartItem(TimeStampedModel):
 
 
 class Order(TimeStampedModel):
-    """A submitted order — the admin's "order request" queue."""
-
     class Status(models.TextChoices):
-        NEW = "new", "New"                 # just submitted, awaiting review
+        NEW = "new", "New"
         CONFIRMED = "confirmed", "Confirmed"
         PACKING = "packing", "Packing"
         SHIPPED = "shipped", "Shipped"
@@ -190,13 +180,10 @@ class Order(TimeStampedModel):
         related_name="orders",
     )
 
-    # Contact details are copied onto the order so an order survives account
-    # deletion and so an admin can read it without following FKs.
     full_name = models.CharField(max_length=120)
     email = models.EmailField()
     phone = models.CharField(max_length=32, blank=True)
 
-    # Delivery snapshot — normally filled from Address.one_line at checkout.
     address_line = models.CharField(max_length=255)
     city = models.CharField(max_length=120)
     region = models.CharField(max_length=120, blank=True)
@@ -212,7 +199,6 @@ class Order(TimeStampedModel):
         choices=PaymentMethod.choices,
         default=PaymentMethod.COD,
     )
-    # Set by an admin once the money has actually been taken care of.
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(null=True, blank=True)
 
@@ -250,7 +236,6 @@ class Order(TimeStampedModel):
 
     @classmethod
     def _generate_number(cls) -> str:
-        """GS-YYMMDD-XXXX, unique and short enough to read out over a phone."""
         today = timezone.localdate().strftime("%y%m%d")
         for _ in range(50):
             candidate = f"GS-{today}-{secrets.token_hex(2).upper()}"
@@ -269,7 +254,6 @@ class Order(TimeStampedModel):
 
     @property
     def status_class(self) -> str:
-        """Bootstrap-ish badge class used by the templates."""
         return {
             self.Status.NEW: "warning",
             self.Status.CONFIRMED: "info",
@@ -285,7 +269,6 @@ class Order(TimeStampedModel):
         self.save(update_fields=["is_paid", "paid_at", "updated_at"])
 
     def transition(self, new_status: str):
-        """Move the order along, stamping the matching timestamp."""
         self.status = new_status
         fields = ["status", "updated_at"]
         now = timezone.now()
@@ -299,14 +282,10 @@ class Order(TimeStampedModel):
 
 
 class OrderItem(models.Model):
-    """A frozen copy of a cart line at the moment the order was placed."""
-
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(
         "catalog.Product", on_delete=models.SET_NULL, null=True, related_name="order_items"
     )
-    # Snapshots keep the invoice readable even if the product is renamed,
-    # repriced or deleted later.
     product_name = models.CharField(max_length=160)
     product_slug = models.CharField(max_length=180, blank=True)
     size_name = models.CharField(max_length=24, blank=True)

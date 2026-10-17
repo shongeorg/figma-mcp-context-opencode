@@ -4,7 +4,6 @@
 {% block title %}{% if category %}{{ category.name }} — {% endif %}Shop — {{ SITE_NAME }}{% endblock %}
 
 {% block main %}
-<!-- Mobile-only top row: search + filter trigger (Figma mobile frame) -->
       <div class="m-toprow">
         <form class="m-search" role="search" action="{% url 'catalog:shop' %}" method="get">
           <label class="visually-hidden" for="m-search-input">Find your plants</label>
@@ -60,9 +59,7 @@
         </nav>
       </div>
 
-      <!-- ========================== Shop ========================== -->
       <div class="container shop">
-        <!-- Sidebar -->
         <div>
           <aside class="filters" id="filters" aria-label="Product filters">
             <div class="filter-block">
@@ -157,14 +154,12 @@
           </section>
         </div>
 
-        <!-- Mobile-only shop tabs -->
         <nav class="m-tabs" aria-label="Shop sections">
           <a class="m-tabs__item" href="{% url 'catalog:shop' %}" data-m-tab="all">All Plants</a>
           <a class="m-tabs__item" href="{% url 'catalog:shop' %}?sort=newest" data-m-tab="new">New Arrivals</a>
           <a class="m-tabs__item" href="{% url 'catalog:shop' %}" data-m-tab="sale">Sale</a>
         </nav>
 
-        <!-- Product grid -->
         <section aria-labelledby="shop-title">
           <h1 class="shop-title" id="shop-title">
             {% if category %}

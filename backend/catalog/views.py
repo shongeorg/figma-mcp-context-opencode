@@ -1,5 +1,3 @@
-"""Catalogue pages: the shop grid with filters, product detail, reviews."""
-
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
@@ -8,16 +6,15 @@ from urllib.parse import quote
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Case, Count, IntegerField, Q, When
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from . import services
 from .models import Category, Product, ProductSize, Review, Size, Tag
 
-
-# ------------------------------------------------------------- filtering --
 
 SORTS = {
     "": ("ordering",),
@@ -35,7 +32,6 @@ def _selected(request, key: str) -> list[str]:
 
 
 def build_filter_context(request, category=None):
-    """Everything the sidebar needs, plus the active-filter summary."""
     products = Product.objects.active().select_related("category").prefetch_related("images")
 
     query = (request.GET.get("q") or "").strip()
@@ -59,7 +55,6 @@ def build_filter_context(request, category=None):
         if tag_objects:
             products = products.filter(tags__in=tag_objects).distinct()
 
-    # Price range, as two comma-separated numbers.
     price_min = price_max = None
     price_raw = (request.GET.get("price") or "").strip()
     if price_raw:
@@ -79,26 +74,7 @@ def build_filter_context(request, category=None):
     ordering = SORTS.get(request.GET.get("sort", "") or "", SORTS[""])
     products = products.order_by(*ordering)
 
-    # Sidebar counts: a category shows its whole subtree, as in the mockup.
-    category_rows = []
-    roots = (
-        Category.objects.filter(is_active=True, parent__isnull=True)
-        .prefetch_related("children")
-        .order_by("ordering", "name")
-    )
-    for root in roots:
-        family_ids = root.get_family_ids()
-        category_rows.append({
-            "category": root,
-            "count": Product.objects.active().filter(category_id__in=family_ids).count(),
-            "children": [
-                {
-                    "category": child,
-                    "count": Product.objects.active().in_category(child).count(),
-                }
-                for child in root.children.filter(is_active=True).order_by("ordering", "name")
-            ],
-        })
+    category_rows = services.category_row_tree()
 
     return {
         "filter_products": products,
@@ -112,29 +88,25 @@ def build_filter_context(request, category=None):
             ("", "Default"), ("newest", "Newest first"), ("price-asc", "Price: low to high"),
             ("price-desc", "Price: high to low"), ("rating", "Best rated"), ("name", "Name A–Z"),
         ],
-        "all_sizes": Size.objects.order_by("ordering"),
-        "all_tags": Tag.objects.filter(is_active=True).order_by("name"),
+        "all_sizes": services.sizes_cached(),
+        "all_tags": services.tags_cached(),
         "category_rows": category_rows,
     }
 
 
 def paginate(request, queryset, per_page=None):
-    """Django's paginator, pinned to a sane page on a bad ?page=."""
     from django.conf import settings
 
     paginator = Paginator(queryset, per_page or settings.PRODUCTS_PER_PAGE)
     page_number = request.GET.get("page") or 1
     try:
         page_obj = paginator.page(page_number)
-    except Exception:  # non-numeric or out-of-range page
+    except Exception:
         page_obj = paginator.page(1)
     return paginator, page_obj
 
 
-# ----------------------------------------------------------------- views --
-
 def shop(request, category: Category | None = None):
-    """The catalogue grid, optionally narrowed to a category subtree."""
     context = build_filter_context(request, category)
     paginator, page_obj = paginate(request, context["filter_products"])
     context.update({
@@ -150,7 +122,8 @@ def shop(request, category: Category | None = None):
 
 def category_detail(request, slug: str):
     category = get_object_or_404(
-        Category.objects.filter(is_active=True), slug=slug
+        Category.objects.filter(is_active=True).select_related("parent__parent"),
+        slug=slug,
     )
     return shop(request, category=category)
 
@@ -158,32 +131,31 @@ def category_detail(request, slug: str):
 def product_detail(request, slug: str):
     product = get_object_or_404(
         Product.objects.active()
-        .select_related("category")
-        .prefetch_related("images", "tags", "sizes__size", "reviews__user"),
+        .select_related("category__parent__parent")
+        .prefetch_related("images", "tags", "sizes__size"),
         slug=slug,
     )
 
-    reviews = [
-        review for review in product.reviews.filter(is_approved=True)
-    ]
-    paginator, review_page = paginate(request, reviews, per_page=5)
+    review_queryset = (
+        Review.objects.filter(product=product, is_approved=True)
+        .select_related("user")
+        .order_by("-created_at")
+    )
+    paginator, review_page = paginate(request, review_queryset, per_page=5)
 
-    # Related: same category, excluding this product, then backfilled.
+    in_family = Case(
+        When(category_id__in=services.family_ids(product.category), then=1),
+        default=0,
+        output_field=IntegerField(),
+    )
     related = list(
         Product.objects.active()
-        .in_category(product.category)
         .exclude(pk=product.pk)
         .select_related("category")
         .prefetch_related("images")
-    )[:4]
-    if len(related) < 4:
-        backfill = list(
-            Product.objects.active()
-            .exclude(pk__in=[p.pk for p in related] + [product.pk])
-            .select_related("category")
-            .prefetch_related("images")
-        )[: 4 - len(related)]
-        related += backfill
+        .annotate(in_family=in_family)
+        .order_by("-in_family", "ordering", "-created_at")[:4]
+    )
 
     in_wishlist = services.is_wishlisted(request.user, product)
 
@@ -203,8 +175,6 @@ def product_detail(request, slug: str):
 
 def wishlist(request):
     if not request.user.is_authenticated:
-        # Send them to the login page, not back to this URL — redirecting to
-        # `?next=<self>` loops forever.
         return redirect(f"{reverse('core:login')}?next={quote(request.path)}")
 
     entries = (
@@ -230,7 +200,11 @@ def wishlist_toggle(request, product_id: int):
         messages.info(request, f"{product.name} removed from your wishlist.")
 
     next_url = request.POST.get("next") or request.META.get("HTTP_REFERER")
-    if next_url and next_url.startswith("/"):
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
         return redirect(next_url)
     return redirect(product)
 

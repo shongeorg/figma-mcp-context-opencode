@@ -1,5 +1,4 @@
 {% load static %}
-<!-- ========================== Footer ========================== -->
     <footer class="site-footer">
       <div class="container">
         <div class="footer-top" id="services">
@@ -112,8 +111,8 @@
             <ul>
               <li><a href="{% url 'core:account' %}">My Account</a></li>
               <li><a href="{% url 'orders:cart' %}">Our stores</a></li>
-              <li><a href="address.html">Contact us</a></li>
-              <li><a href="index.html#blog">Career</a></li>
+              <li><a href="{% url 'core:address-list' %}">Contact us</a></li>
+              <li><a href="{% url 'core:home' %}#blog">Career</a></li>
               <li><a href="{% url 'catalog:shop' %}">Specials</a></li>
             </ul>
           </nav>
@@ -121,10 +120,10 @@
           <nav class="footer-col" aria-labelledby="footer-help">
             <h2 class="footer-col__title" id="footer-help">Help &amp; Guide</h2>
             <ul>
-              <li><a href="index.html#services">Help Center</a></li>
+              <li><a href="#services">Help Center</a></li>
               <li><a href="{% url 'catalog:shop' %}">How to Buy</a></li>
               <li><a href="{% url 'orders:checkout' %}">Shipping &amp; Delivery</a></li>
-              <li><a href="index.html#services">Product Policy</a></li>
+              <li><a href="#services">Product Policy</a></li>
               <li><a href="{% url 'orders:cart' %}">How to Return</a></li>
             </ul>
           </nav>

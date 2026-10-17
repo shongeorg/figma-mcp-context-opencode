@@ -1,11 +1,5 @@
-/* ==========================================================================
-   GreenShop — mobile product screen (Figma frame 8).
-   The gallery becomes a full-bleed hero and the details rise over it as a
-   rounded sheet; the purchase controls move into a pinned action sheet.
-   ========================================================================== */
 
 @media (max-width: 640px) {
-  /* ---------------------------------------------------- gallery -------- */
   .product {
     display: flex;
     flex-direction: column;
@@ -41,7 +35,6 @@
     object-fit: contain;
   }
 
-  /* compact pill indicator, matching the comp */
   .gallery::after {
     content: "";
     position: absolute;
@@ -55,7 +48,6 @@
     box-shadow: 14px 0 0 var(--green-20), -14px 0 0 var(--green-50);
   }
 
-  /* ------------------------------------------------- details sheet ------ */
   .product-info {
     position: relative;
     z-index: 1;
@@ -104,7 +96,6 @@
     clear: both;
   }
 
-  /* the comp shows the price inside the action sheet instead */
   .product-info__row {
     display: none;
   }
@@ -132,7 +123,6 @@
     color: var(--muted);
   }
 
-  /* "Size:" heading that the comp puts above the chips */
   .product-info__block:has(.sizes)::before {
     content: "Size:";
     display: block;
@@ -142,7 +132,6 @@
     color: var(--ink);
   }
 
-  /* ------------------------------------------------------ size chips --- */
   .sizes {
     display: flex;
     gap: 10px;
@@ -167,7 +156,6 @@
     color: var(--green);
   }
 
-  /* ---------------------------------------------------------- meta ----- */
   .meta {
     margin-block-start: 22px;
     font-size: 15px;
@@ -184,7 +172,6 @@
     font-size: 14px;
   }
 
-  /* -------------------------------------------------- action sheet ----- */
   .buy-row {
     display: grid;
     grid-template-columns: auto auto 1fr;
@@ -236,7 +223,6 @@
     background: var(--m-icon);
   }
 
-  /* ------------------------------------------------------- stepper ----- */
   .stepper {
     gap: 6px;
   }
@@ -269,7 +255,6 @@
     font-size: 16px;
   }
 
-  /* ----------------------------------------------------------- tabs ---- */
   .tabs {
     margin-block-start: 26px;
   }

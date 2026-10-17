@@ -1,10 +1,3 @@
-"""Orders admin — the manual "order request" queue.
-
-There is no payment gateway: a visitor submits an order, it lands here with
-status *New*, and a human confirms it, marks the money as received, ships it
-or cancels it.
-"""
-
 from __future__ import annotations
 
 from django.contrib import admin, messages
@@ -71,7 +64,6 @@ class OrderAdmin(admin.ModelAdmin):
         "mark_delivered", "cancel_orders", "mark_paid",
     )
 
-    # -- presentation ------------------------------------------------------
 
     @admin.display(description="status", ordering="status")
     def status_badge(self, obj):
@@ -92,8 +84,6 @@ class OrderAdmin(admin.ModelAdmin):
 
     @admin.display(description="total", ordering="total")
     def total_col(self, obj):
-        # Pre-format: format_html() escapes its arguments into SafeStrings,
-        # which then refuse the `,.2f` format spec.
         total = f"${obj.total:,.2f}"
         if obj.discount:
             return format_html(
@@ -106,7 +96,6 @@ class OrderAdmin(admin.ModelAdmin):
     def paid_flag(self, obj):
         return obj.is_paid
 
-    # -- workflow actions --------------------------------------------------
 
     @admin.action(description="Confirm selected orders")
     def confirm_orders(self, request, queryset):

@@ -1,10 +1,3 @@
-/* ==========================================================================
-   GreenShop — mobile auth screens (Figma frames 11 & 12).
-   The login / register / reset modals stop being cards and become full
-   screens: centred logo, single heading, brand-coloured social buttons.
-   Scoped to the three auth dialogs only — the order confirmation dialog
-   keeps its card presentation.
-   ========================================================================== */
 
 @media (max-width: 640px) {
   :is(#login-dialog, #register-dialog, #forgot-dialog) {
@@ -33,7 +26,6 @@
     box-shadow: none;
   }
 
-  /* ---------------------------------------------- logo + screen title -- */
   .auth-logo {
     display: block;
     inline-size: 158px;
@@ -64,7 +56,6 @@
     color: var(--quiet);
   }
 
-  /* --------------------------------------------------------- fields --- */
   .auth-form .input,
   .auth-form .input-wrap {
     inline-size: 100%;
@@ -101,7 +92,6 @@
     font-weight: 600;
   }
 
-  /* ------------------------------------------------------- divider ---- */
   .auth-divider {
     margin-block: 26px;
     text-align: center;
@@ -109,7 +99,6 @@
     color: var(--ink);
   }
 
-  /* ------------------------------------------------- social buttons --- */
   .auth-social {
     display: grid;
     gap: 14px;
@@ -133,14 +122,12 @@
     background: var(--m-facebook);
   }
 
-  /* the PNG marks already carry a white glyph, so they must stay untouched */
   .auth-social a img {
     filter: none;
     block-size: 24px;
     inline-size: auto;
   }
 
-  /* ---------------------------------------------------- screen footer -- */
   .auth-foot {
     display: block;
     margin-block-start: 26px;

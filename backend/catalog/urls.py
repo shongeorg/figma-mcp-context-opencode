@@ -1,5 +1,3 @@
-"""Catalogue URLs: the shop grid, product detail, reviews and wishlist."""
-
 from django.urls import path
 
 from . import views

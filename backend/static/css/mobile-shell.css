@@ -1,12 +1,4 @@
-/* ==========================================================================
-   GreenShop — mobile app shell (Figma mobile frames 7–12).
-   Loaded after style.css. Two kinds of rules live here:
-     (a) base rules that hide app-only markup on desktop;
-     (b) everything scoped to 640px and below.
-   The desktop build is not modified by anything in this file.
-   ========================================================================== */
 
-/* --- app-only markup: hidden until the mobile breakpoint ----------------- */
 .appbar,
 .appbar__fab,
 .appbar__note,
@@ -48,12 +40,10 @@
     padding-block-end: 96px;
   }
 
-  /* the app frame replaces the desktop header entirely */
   .site-header {
     display: none;
   }
 
-  /* wide/narrow button labels */
   .lbl--wide {
     display: none;
   }
@@ -62,7 +52,6 @@
     display: inline;
   }
 
-  /* ------------------------------------------------- bottom tab bar ---- */
   .appbar {
     position: fixed;
     inset-inline: 0;
@@ -75,10 +64,8 @@
     padding-inline: 28px;
     background: var(--white);
     border-radius: 24px 24px 0 0;
-    /* scoop the top edge out where the floating button sits */
     -webkit-mask-image: radial-gradient(circle 34px at 50% 0, transparent 98%, #000 100%);
     mask-image: radial-gradient(circle 34px at 50% 0, transparent 98%, #000 100%);
-    /* drop-shadow is applied before the mask, so it follows the notch */
     filter: drop-shadow(0 -4px 14px rgba(0, 0, 0, 0.1));
   }
 
@@ -139,7 +126,6 @@
     display: none;
   }
 
-  /* ------------------------------------------- mobile screen header ---- */
   .m-topbar {
     display: grid;
     grid-template-columns: 44px 1fr 44px;
@@ -181,7 +167,6 @@
     display: block;
   }
 
-  /* the product screen drops its header onto the grey media panel */
   .m-topbar--media {
     margin-block: 0 0;
     margin-inline: calc(var(--gutter) * -1);
@@ -193,12 +178,10 @@
     background: var(--white);
   }
 
-  /* the desktop trail is not part of the app screens */
   .breadcrumb {
     display: none;
   }
 
-  /* ------------------------------------------ mobile search + filter --- */
   .m-toprow {
     display: flex;
     align-items: center;
@@ -256,7 +239,6 @@
     box-shadow: 0 8px 18px rgba(70, 163, 88, 0.35);
   }
 
-  /* ------------------------------------------------------ shop tabs ---- */
   .m-tabs {
     display: flex;
     align-items: center;

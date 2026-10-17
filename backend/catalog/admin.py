@@ -1,5 +1,3 @@
-"""Catalogue admin: categories (with subcategories), products, tags, sizes."""
-
 from __future__ import annotations
 
 from django.contrib import admin, messages
@@ -18,11 +16,7 @@ from .models import (
 )
 
 
-# ---------------------------------------------------------------- helpers --
-
 class TreeOrderingFilter(admin.SimpleListFilter):
-    """Filter products by the category they sit in, subtree included."""
-
     title = "category"
     parameter_name = "category"
 
@@ -64,8 +58,6 @@ class ProductSizeInline(admin.TabularInline):
     fields = ("size", "price_delta", "stock", "is_active")
 
 
-# ------------------------------------------------------------- categories --
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "parent", "depth_badge", "product_count_col", "is_active", "ordering")
@@ -83,7 +75,6 @@ class CategoryAdmin(admin.ModelAdmin):
     @admin.display(description="level", ordering="parent")
     def depth_badge(self, obj):
         if obj.depth == 0:
-            # Constant markup — format_html() needs at least one argument.
             return mark_safe('<span style="color:#46a358;font-weight:600">root</span>')
         indent = "&nbsp;" * (obj.depth * 3)
         return format_html(
@@ -107,8 +98,6 @@ class CategoryAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("parent")
 
-
-# ---------------------------------------------------------------- product --
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -143,8 +132,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.display(description="price")
     def price_col(self, obj):
-        # Format the numbers first: format_html() escapes its arguments, and
-        # a SafeString refuses to accept `,.2f`.
         price = f"${obj.price:,.2f}"
         if obj.is_on_sale:
             return format_html(
@@ -198,8 +185,6 @@ class ProductAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related("category").prefetch_related("images")
 
 
-# ------------------------------------------------------- tags / sizes ------
-
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "is_active", "product_count")
@@ -224,8 +209,6 @@ class SizeAdmin(admin.ModelAdmin):
     def product_count(self, obj):
         return obj.products.count()
 
-
-# ------------------------------------------------------------- reviews -----
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -260,8 +243,6 @@ class ReviewAdmin(admin.ModelAdmin):
             services.refresh_product_rating(review.product_id)
         self.message_user(request, f"{queryset.count()} reviews unapproved.", messages.WARNING)
 
-
-# ------------------------------------------------------------ wishlist -----
 
 @admin.register(Wishlist)
 class WishlistAdmin(admin.ModelAdmin):

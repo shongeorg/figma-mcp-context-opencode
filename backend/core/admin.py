@@ -1,5 +1,3 @@
-"""Accounts admin: users, addresses, newsletter subscribers."""
-
 from __future__ import annotations
 
 from django.contrib import admin, messages
@@ -49,7 +47,6 @@ class UserAdmin(BaseUserAdmin):
         )
 
     def get_queryset(self, request):
-        # No select_related: every listed column comes from the user row.
         return super().get_queryset(request)
 
 

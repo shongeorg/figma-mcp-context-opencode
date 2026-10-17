@@ -38,6 +38,7 @@
                       </form>
                       <form method="post" action="{% url 'catalog:wishlist-toggle' product.pk %}">
                         {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'catalog:wishlist' %}" />
                         <button type="submit" aria-pressed="true">
                           <img src="{% static 'images/icons/icon-heart.svg' %}" width="20" height="20" alt="" />
                           <span class="visually-hidden">Remove {{ product.name }} from wishlist</span>

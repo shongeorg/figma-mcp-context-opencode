@@ -1,5 +1,3 @@
-"""Catalogue: categories (with subcategories), products, sizes, tags, reviews."""
-
 from __future__ import annotations
 
 from decimal import Decimal
@@ -13,11 +11,7 @@ from core.models import TimeStampedModel
 from core.utils import unique_slugify
 
 
-# ---------------------------------------------------------------- managers --
-
 class ProductQuerySet(models.QuerySet):
-    """Every storefront filter the shop needs, in one place."""
-
     def active(self):
         return self.filter(is_active=True)
 
@@ -34,7 +28,6 @@ class ProductQuerySet(models.QuerySet):
         return self.filter(stock__gt=0)
 
     def in_category(self, category):
-        """Include the whole subtree, not just the direct children."""
         if category is None:
             return self
         ids = [category.pk]
@@ -57,16 +50,7 @@ class CategoryQuerySet(models.QuerySet):
         return self.filter(parent__isnull=True)
 
 
-# ------------------------------------------------------------------ models --
-
 class Category(TimeStampedModel):
-    """A category tree node.
-
-    ``parent`` being ``NULL`` marks a top-level category. The storefront
-    shows category product counts in the mockup (House Plants 33, Potter
-    Plants 12 …), and those counts include the whole subtree.
-    """
-
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -96,18 +80,14 @@ class Category(TimeStampedModel):
         return reverse("catalog:category", args=[self.slug])
 
     def save(self, *args, **kwargs):
-        # ЧПУ for categories too — a subcategory slug is globally unique, so
-        # "Seeds" and "Small Plants" never collide even under different parents.
         if not self.slug:
             self.slug = unique_slugify(self, self.name, max_length=140)
         if self.parent_id and self.parent_id == self.pk:
             self.parent = None
         super().save(*args, **kwargs)
 
-    # -- tree helpers ------------------------------------------------------
 
     def get_descendants(self):
-        """All nested categories below this one, breadth-first."""
         result = []
         frontier = [self]
         seen = {self.pk}
@@ -121,18 +101,18 @@ class Category(TimeStampedModel):
         return result
 
     def get_descendants_ids(self):
-        return [c.pk for c in self.get_descendants()]
+        return [pk for pk in self.get_family_ids() if pk != self.pk]
 
     def get_family_ids(self):
-        """Self plus every descendant — what the product counts are built on."""
-        return [self.pk] + self.get_descendants_ids()
+        from .services import family_ids
+
+        return family_ids(self)
 
     def get_products(self):
         return Product.objects.active().in_category(self)
 
     @property
     def product_count(self):
-        """Cached by the view; computed here so the template stays dumb."""
         cached = getattr(self, "_product_count", None)
         if cached is None:
             cached = Product.objects.active().in_category(self).count()
@@ -141,7 +121,6 @@ class Category(TimeStampedModel):
 
     @property
     def breadcrumbs(self):
-        """Root → self, for the "Shop → House Plants" trail."""
         chain = []
         node = self
         while node is not None:
@@ -155,8 +134,6 @@ class Category(TimeStampedModel):
 
 
 class Tag(TimeStampedModel):
-    """Free-form labels shown as the shop's tag cloud."""
-
     name = models.CharField(max_length=60, unique=True)
     slug = models.SlugField(max_length=80, unique=True)
     is_active = models.BooleanField(default=True)
@@ -176,8 +153,6 @@ class Tag(TimeStampedModel):
 
 
 class Product(TimeStampedModel):
-    """A single plant in the shop."""
-
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -197,8 +172,6 @@ class Product(TimeStampedModel):
         decimal_places=2,
         validators=[MinValueValidator(Decimal("0.00"))],
     )
-    # When set and above `price`, the shop shows "N% OFF" — exactly how the
-    # mockup renders African Violet at $199.00 (was $229.00, 13% OFF).
     old_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -212,7 +185,6 @@ class Product(TimeStampedModel):
     is_featured = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
 
-    # Denormalised review summary, refreshed by `catalog.reviews`.
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=2,
@@ -257,12 +229,10 @@ class Product(TimeStampedModel):
                 sku = f"{base}-{n}"
                 n += 1
             self.sku = sku
-        # Guard the "was $X" display rule at the model level too.
         if self.old_price is not None and self.old_price <= self.price:
             self.old_price = None
         super().save(*args, **kwargs)
 
-    # -- display helpers ---------------------------------------------------
 
     @property
     def is_on_sale(self) -> bool:
@@ -277,11 +247,13 @@ class Product(TimeStampedModel):
 
     @property
     def primary_image(self):
-        image = getattr(self, "_primary_image", None)
-        if image is None:
-            image = self.images.filter(is_primary=True).first() or self.images.first()
-            self._primary_image = image
-        return image
+        if not hasattr(self, "_primary_image"):
+            images = list(self.images.all())
+            self._primary_image = next(
+                (img for img in images if img.is_primary),
+                images[0] if images else None,
+            )
+        return self._primary_image
 
     @property
     def image_url(self) -> str:
@@ -289,12 +261,13 @@ class Product(TimeStampedModel):
         return image.image.url if image else ""
 
     def get_sizes(self):
+        prefetched = getattr(self, "_prefetched_objects_cache", {}).get("sizes")
+        if prefetched is not None:
+            return [ps for ps in prefetched if ps.is_active]
         return self.sizes.select_related("size").filter(is_active=True)
 
 
 class ProductImage(TimeStampedModel):
-    """Extra product shots. The first `is_primary` row is the grid tile."""
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="products/")
     alt = models.CharField(max_length=160, blank=True)
@@ -317,8 +290,6 @@ class ProductImage(TimeStampedModel):
 
 
 class Size(TimeStampedModel):
-    """S / M / L / XL — the plant sizes the mockup offers on every product."""
-
     name = models.CharField(max_length=24, unique=True)
     slug = models.SlugField(max_length=32, unique=True)
     ordering = models.PositiveIntegerField(default=0)
@@ -338,11 +309,8 @@ class Size(TimeStampedModel):
 
 
 class ProductSize(TimeStampedModel):
-    """Which sizes a product is sold in, and at what delta."""
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="sizes")
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="products")
-    # Added to the product price for this size (a big pot costs more).
     price_delta = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -366,8 +334,6 @@ class ProductSize(TimeStampedModel):
 
 
 class Review(TimeStampedModel):
-    """A customer review. Pending until an admin approves it."""
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -405,8 +371,6 @@ class Review(TimeStampedModel):
 
 
 class Wishlist(TimeStampedModel):
-    """The heart icon in the mockup's header and product cards."""
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
