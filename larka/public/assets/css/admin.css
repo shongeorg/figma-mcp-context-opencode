@@ -1,0 +1,126 @@
+body.admin-body {
+    background: var(--surface, #fbfbfb);
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 16px clamp(16px, 4vw, 32px);
+    background: #fff;
+    border-block-end: 1px solid var(--line, #eaeaea);
+}
+
+.admin-header nav {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-header nav a {
+    color: var(--muted, #727272);
+    font-size: 15px;
+}
+
+.admin-header nav a[aria-current="page"] {
+    color: var(--green, #46a358);
+    font-weight: 500;
+}
+
+.admin-main {
+    padding-block: 32px 64px;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-block-end: 32px;
+}
+
+.admin-stat {
+    background: #fff;
+    border: 1px solid var(--line, #eaeaea);
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.admin-stat__label {
+    color: var(--muted, #727272);
+    font-size: 14px;
+}
+
+.admin-stat__value {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink, #3d3d3d);
+}
+
+.admin-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-block-end: 16px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0 24px;
+    max-width: 900px;
+}
+
+.admin-thumb {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.admin-images {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-block-start: 8px;
+}
+
+.admin-images img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--line, #eaeaea);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--line, #eaeaea);
+    border-radius: 8px;
+}
+
+.admin-table th,
+.admin-table td {
+    text-align: start;
+    padding: 12px 14px;
+    border-block-end: 1px solid var(--line, #eaeaea);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+    border-block-end: 0;
+}
+
+.form-status--error {
+    color: #b3261e;
+}
+
+.admin-table td small {
+    color: var(--muted, #777);
+}

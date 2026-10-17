@@ -1,0 +1,295 @@
+/* ==========================================================================
+   GreenShop — mobile home screen (Figma frame 7).
+   Depends on mobile-shell.css for the 640px breakpoint tokens.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  /* home is a vertical stack so the sale banner can follow the grid */
+  main#main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main#main > .m-toprow {
+    order: 1;
+  }
+
+  main#main > .hero {
+    order: 2;
+  }
+
+  main#main > .container.shop {
+    order: 3;
+  }
+
+  main#main > .promo {
+    order: 4;
+  }
+
+  main#main > .blog {
+    order: 5;
+  }
+
+  /* the sidebar wrapper dissolves so the filter panel, tabs, grid and the
+     "Super Sale" banner can each take their own place in the stack */
+  .container.shop {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .container.shop > div {
+    display: contents;
+  }
+
+  /* NOTE: `.filters` and `.sale-banner` are DOM grandchildren here, so these
+     must be descendant selectors — `display: contents` changes layout, not
+     tree structure. */
+  .container.shop .filters {
+    order: 0;
+  }
+
+  .container.shop > .m-tabs {
+    order: 1;
+  }
+
+  .container.shop > section:has(> #shop-title) {
+    order: 2;
+  }
+
+  .container.shop .sale-banner {
+    order: 3;
+  }
+
+  /* ------------------------------------------------------------ hero --- */
+  .hero {
+    margin-block-start: 0;
+  }
+
+  .hero__bg {
+    overflow: hidden;
+    padding: 24px 20px 46px;
+    min-block-size: auto;
+    border-radius: 22px;
+    background: linear-gradient(140deg, #e6f2e9 0%, #f3faf5 55%, #e9f5ec 100%);
+  }
+
+  .hero__content {
+    max-inline-size: none;
+  }
+
+  .eyebrow {
+    margin-block-end: 8px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .hero__title {
+    margin-block-end: 12px;
+    font-size: clamp(26px, 7.9vw, 33px);
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+  }
+
+  .hero__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-inline-size: 58%;
+    margin-block-end: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .hero__cta .btn {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--green);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .hero__cta .btn::after {
+    content: " \2192";
+  }
+
+  .hero__cta .btn:hover {
+    background: none;
+    color: var(--green);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset-inline-end: -7%;
+    inset-block-end: 10px;
+    inline-size: 44%;
+    max-inline-size: 190px;
+    aspect-ratio: auto;
+    block-size: auto;
+    margin: 0;
+    opacity: 0.98;
+  }
+
+  .hero__media--thumb {
+    display: none;
+  }
+
+  .hero__dots {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 16px;
+    justify-content: center;
+  }
+
+  /* ------------------------------------------------- filters as panel -- */
+  .filters {
+    display: none;
+    order: 3;
+    margin-block-end: 20px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--m-radius);
+    background: var(--white);
+  }
+
+  .filters[data-open="true"] {
+    display: block;
+  }
+
+  /* -------------------------------------------------------- the grid --- */
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* the comp staggers the right-hand column downwards */
+  .product-grid > .product-card:nth-child(even) {
+    margin-block-start: 26px;
+  }
+
+  .product-card__media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--m-radius-sm);
+    background: var(--m-surface);
+  }
+
+  .product-card__media > a {
+    display: grid;
+    place-items: center;
+    block-size: 100%;
+  }
+
+  .product-card__media img {
+    inline-size: 88%;
+    block-size: 88%;
+    object-fit: contain;
+  }
+
+  /* only the wishlist heart survives on mobile, as a floating disc */
+  .quick-actions {
+    position: absolute;
+    inset-block-start: 10px;
+    inset-inline-end: 10px;
+    display: block;
+    inset-inline-start: auto;
+    inset-block-end: auto;
+    background: none;
+    opacity: 1;
+  }
+
+  /* must be at least (0,1,1) to beat `.quick-actions button, ... a` */
+  .quick-actions > button,
+  .quick-actions > a {
+    display: none;
+  }
+
+  .quick-actions > button:nth-child(2) {
+    display: grid;
+    place-items: center;
+    inline-size: 38px;
+    block-size: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--green);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .quick-actions > button:nth-child(2) img {
+    inline-size: 18px;
+    block-size: 18px;
+  }
+
+  /* the app tab strip replaces the desktop toolbar */
+  .shop-toolbar {
+    display: none;
+  }
+
+  .badge {
+    inset-block-start: 0;
+    padding: 6px 12px;
+    border-radius: 0 0 var(--m-radius-sm) 0;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .product-card__title {
+    margin-block: 12px 4px;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .product-card__price {
+    font-size: 16px;
+  }
+
+  /* ---------------------------------------- related / interested rows -- */
+  .related {
+    margin-block-start: 44px;
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-block-start: 20px;
+  }
+
+  .related-grid > .mini-card:nth-child(even) {
+    margin-block-start: 26px;
+  }
+
+  .mini-card__media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--m-radius-sm);
+    background: var(--m-surface);
+  }
+
+  .mini-card__media img {
+    inline-size: 88%;
+    block-size: 88%;
+    object-fit: contain;
+  }
+
+  .mini-card__title {
+    margin-block-start: 10px;
+    font-size: 15px;
+  }
+
+  /* ------------------------------------------ promo + blog + banner ---- */
+  .promo,
+  .blog,
+  .sale-banner {
+    margin-block-start: 40px;
+  }
+}

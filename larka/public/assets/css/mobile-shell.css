@@ -1,0 +1,289 @@
+/* ==========================================================================
+   GreenShop — mobile app shell (Figma mobile frames 7–12).
+   Loaded after style.css. Two kinds of rules live here:
+     (a) base rules that hide app-only markup on desktop;
+     (b) everything scoped to 640px and below.
+   The desktop build is not modified by anything in this file.
+   ========================================================================== */
+
+/* --- app-only markup: hidden until the mobile breakpoint ----------------- */
+.appbar,
+.appbar__fab,
+.appbar__note,
+.m-toprow,
+.m-tabs,
+.m-topbar,
+.m-shipping,
+.score-chip,
+.buy-row__qty,
+.buy-row__price,
+.buy-row__cart,
+.cart-item__size,
+.auth-logo,
+.auth-title,
+.auth-foot,
+.input-wrap__toggle--mobile {
+  display: none;
+}
+
+.lbl--narrow {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 20px;
+    --m-radius: 20px;
+    --m-radius-sm: 16px;
+    --m-sheet-radius: 30px;
+    --m-surface: #f8f8f8;
+    --m-icon: #f4f4f4;
+    --m-google: #4a86f7;
+    --m-facebook: #3d5a98;
+    --m-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+    --m-sheet-shadow: 0 -10px 30px rgba(0, 0, 0, 0.07);
+  }
+
+  body {
+    padding-block-end: 96px;
+  }
+
+  /* the app frame replaces the desktop header entirely */
+  .site-header {
+    display: none;
+  }
+
+  /* wide/narrow button labels */
+  .lbl--wide {
+    display: none;
+  }
+
+  .lbl--narrow {
+    display: inline;
+  }
+
+  /* ------------------------------------------------- bottom tab bar ---- */
+  .appbar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    block-size: 68px;
+    padding-inline: 28px;
+    background: var(--white);
+    border-radius: 24px 24px 0 0;
+    /* scoop the top edge out where the floating button sits */
+    -webkit-mask-image: radial-gradient(circle 34px at 50% 0, transparent 98%, #000 100%);
+    mask-image: radial-gradient(circle 34px at 50% 0, transparent 98%, #000 100%);
+    /* drop-shadow is applied before the mask, so it follows the notch */
+    filter: drop-shadow(0 -4px 14px rgba(0, 0, 0, 0.1));
+  }
+
+  .appbar__link {
+    display: grid;
+    place-items: center;
+    inline-size: 34px;
+    block-size: 34px;
+    color: #cfcfcf;
+    transition: color 0.15s ease;
+  }
+
+  .appbar__link[aria-current="page"] {
+    color: var(--green);
+  }
+
+  .appbar__link:has(+ .appbar__gap) {
+    margin-inline-end: 4px;
+  }
+
+  .appbar__gap {
+    display: block;
+    inline-size: 88px;
+    flex: 0 0 auto;
+  }
+
+  .appbar__fab {
+    position: fixed;
+    inset-inline-start: 50%;
+    inset-block-end: 40px;
+    z-index: 61;
+    display: grid;
+    place-items: center;
+    inline-size: 62px;
+    block-size: 62px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--white);
+    box-shadow: 0 10px 22px rgba(70, 163, 88, 0.42);
+  }
+
+  .appbar__note {
+    position: fixed;
+    inset-inline: 20px;
+    inset-block-end: 84px;
+    z-index: 62;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: var(--m-shadow);
+  }
+
+  .appbar__note:empty {
+    display: none;
+  }
+
+  /* ------------------------------------------- mobile screen header ---- */
+  .m-topbar {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    gap: 12px;
+    margin-block: 4px 18px;
+  }
+
+  .m-topbar--split {
+    grid-template-columns: 44px 1fr;
+  }
+
+  .m-topbar--split .m-topbar__btn:last-child {
+    justify-self: end;
+  }
+
+  .m-topbar__btn {
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: 50%;
+    background: var(--m-icon);
+    color: var(--ink);
+  }
+
+  .m-topbar__btn--heart[aria-pressed="true"] {
+    color: var(--green);
+  }
+
+  .m-topbar__title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .m-topbar__spacer {
+    display: block;
+  }
+
+  /* the product screen drops its header onto the grey media panel */
+  .m-topbar--media {
+    margin-block: 0 0;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 18px var(--gutter) 4px;
+    background: var(--m-surface);
+  }
+
+  .m-topbar--media .m-topbar__btn {
+    background: var(--white);
+  }
+
+  /* the desktop trail is not part of the app screens */
+  .breadcrumb {
+    display: none;
+  }
+
+  /* ------------------------------------------ mobile search + filter --- */
+  .m-toprow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-block-start: 16px;
+    margin-block-end: 22px;
+  }
+
+  .m-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .m-search__icon {
+    position: absolute;
+    inset-inline-start: 18px;
+    color: var(--quiet);
+    pointer-events: none;
+  }
+
+  .m-search input {
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 54px;
+    padding-inline: 50px 18px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--m-surface);
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  .m-search input::placeholder {
+    color: var(--quiet);
+  }
+
+  .m-search input:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
+  .m-filter {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    inline-size: 54px;
+    block-size: 54px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--green);
+    color: var(--white);
+    box-shadow: 0 8px 18px rgba(70, 163, 88, 0.35);
+  }
+
+  /* ------------------------------------------------------ shop tabs ---- */
+  .m-tabs {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-block-end: 22px;
+  }
+
+  .m-tabs__item {
+    position: relative;
+    padding-block-end: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .m-tabs__item.is-active {
+    color: var(--green);
+  }
+
+  .m-tabs__item.is-active::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 3px;
+    border-radius: 3px;
+    background: var(--green);
+  }
+}
